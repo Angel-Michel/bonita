@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Capítulo 1: La Protagonista 📖✨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0; padding: 0;
+            height: 100vh; width: 100vw;
+            background-color: #05050a;
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            touch-action: none;
+            user-select: none;
+        }
+
+        /* --- FONDOS DE LAS ESCENAS --- */
+        #scene-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: all 1.5s ease;
+            z-index: 1;
+        }
+
+        .bg-system { background: radial-gradient(circle at center, #1a0b2e 0%, #000000 100%); }
+        .bg-hero { background: radial-gradient(circle at top, #0d1b2a 0%, #000000 100%); }
+        .bg-romance { background: linear-gradient(to bottom, #2b1055 0%, #7597de 100%); }
+
+        /* Efecto de estática o lluvia (Misterio/Terror/Gotham) */
+        #fx-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 4px 4px;
+            opacity: 0.3;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* --- INTERFAZ DE NOVELA VISUAL --- */
+        #vn-container {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            z-index: 10;
+            padding-bottom: 5vh;
+        }
+
+        /* Sprite de personaje (Emojis grandes para darle vida) */
+        #character-sprite {
+            font-size: 8rem;
+            margin-bottom: -20px;
+            text-shadow: 0 0 30px rgba(255,255,255,0.2);
+            transition: all 0.5s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            font-family: 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif;
+        }
+
+        .show-sprite { opacity: 1 !important; transform: translateY(0) !important; }
+
+        /* Caja de diálogo */
+        #dialogue-box {
+            width: 90%; max-width: 600px;
+            background: rgba(10, 10, 15, 0.85);
+            border: 2px solid #6c63ff;
+            border-radius: 12px;
+            padding: 25px 20px 20px 20px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 15px rgba(108, 99, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Etiqueta del nombre (Estilo Manhwa/Juego) */
+        #name-tag {
+            position: absolute;
+            top: -15px; left: 20px;
+            background: #6c63ff;
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+        }
+
+        /* Texto que se escribe solo */
+        #dialogue-text {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            min-height: 80px;
+            color: #e0e0e0;
+        }
+
+        /* Botón para avanzar o elegir opción */
+        #choices-container {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-end;
+            min-height: 45px;
+        }
+
+        .choice-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #6c63ff;
+            color: #a39eff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: right;
+            display: none; /* Se muestra al terminar de escribir */
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+
+        .choice-btn:hover, .choice-btn:active {
+            background: #6c63ff;
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        /* Detalles de Fanfic / Letras especiales */
+        .highlight { color: #00e676; font-weight: bold; }
+        .blue-candy { color: #4fc3f7; font-weight: bold; }
+        .system-text { font-family: 'VT323', monospace; font-size: 1.4rem; color: #ff5252; }
+
+    </style>
+</head>
+<body>
+
+    <!-- FONDO Y EFECTOS -->
+    <div id="scene-bg" class="bg-system"></div>
+    <div id="fx-overlay"></div>
+
+    <!-- CONTENEDOR DE LA NOVELA VISUAL -->
+    <div id="vn-container">
+        <div id="character-sprite">💻</div>
+        
+        <div id="dialogue-box">
+            <div id="name-tag">Sistema</div>
+            <div id="dialogue-text"></div>
+            
+            <div id="choices-container">
+                <!-- Los botones de opciones aparecerán aquí -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- MOTOR DE NOVELA VISUAL ---
+        
+        // La historia completa dividida en escenas/diálogos
+        const story = [
+            {
+                name: "[ ALERTA DEL SISTEMA ]",
+                sprite: "💻",
+                bg: "bg-system",
+                text: "<span class='system-text'>Buscando en el multiverso... Escaneando Ciudad Gótica y Ciudad Central... Escaneando Asociación de Héroes...</span>",
+                choices: [{ text: "[ Ver resultados ]", next: 1 }]
+            },
+            {
+                name: "[ ALERTA DEL SISTEMA ]",
+                sprite: "⚠️",
+                bg: "bg-system",
+                text: "<span class='system-text'>ERROR. Ningún héroe registrado cumple con los requisitos. Se requiere a la protagonista principal. Identidad confirmada: MARELY.</span>",
+                choices: [{ text: "¿Qué está pasando?", next: 2 }]
+            },
+            {
+                name: "Ángel (Personaje de Apoyo)",
+                sprite: "🦇",
+                bg: "bg-hero",
+                text: "Tranquila. He hackeado la interfaz. Sé que te encantan las buenas historias de ficción, los manhwas y los misterios...",
+                choices: [{ text: "Así es...", next: 3 }, { text: "¿Quién eres?", next: 3 }]
+            },
+            {
+                name: "Ángel",
+                sprite: "⚡",
+                bg: "bg-hero",
+                text: "Barry Allen puede romper la barrera del tiempo, Dick Grayson tiene la agilidad perfecta y Saitama acaba con todo de un golpe...",
+                choices: [{ text: "Sigue...", next: 4 }]
+            },
+            {
+                name: "Ángel",
+                sprite: "🌌",
+                bg: "bg-hero",
+                text: "Pero ninguno de ellos, ni todo el orgullo de Vegeta, me dejaron sin palabras como lo haces tú.",
+                choices: [{ text: "[ Siguiente ]", next: 5 }]
+            },
+            {
+                name: "Ángel",
+                sprite: "🎒",
+                bg: "bg-romance",
+                text: "Como en todo buen inicio de fanfic o manhwa, preparé tu inventario para esta aventura: <span class='highlight'>Chocolates de menta</span> 🍫🌿 y bastantes <span class='blue-candy'>Paletas azules</span> 🍭🔵.",
+                choices: [{ text: "Mi inventario perfecto.", next: 6 }]
+            },
+            {
+                name: "Ángel",
+                sprite: "🎙️",
+                bg: "bg-romance",
+                text: "Si esto fuera un anime, el doblaje de esta escena sería suave y sincero. Porque quiero decirte que estoy dispuesto a esperarte.",
+                choices: [{ text: "[ Escuchar ]", next: 7 }]
+            },
+            {
+                name: "Ángel",
+                sprite: "📖",
+                bg: "bg-romance",
+                text: "Incluso si eso significa aguardar días por un mensaje. Me interesa conocer a fondo tu forma de amar, tus facetas, tus historias de terror y todo lo que te hace ser tú.",
+                choices: [{ text: "Avanzar a tu ritmo...", next: 8 }]
+            },
+            {
+                name: "Ángel",
+                sprite: "💜",
+                bg: "bg-romance",
+                text: "He leído muchas historias, pero la que más quiero conocer y escribir es la nuestra. Alguien como tú vale toda la espera del mundo.",
+                choices: [{ text: "[ Fin del Capítulo 1 ]", next: 9 }]
+            },
+            {
+                name: "Sistema",
+                sprite: "✨",
+                bg: "bg-romance",
+                text: "<span class='system-text'>Misión completada. Has desbloqueado a un fan incondicional. Guardando progreso...</span>",
+                choices: [{ text: "Volver a leer el capítulo", next: 0 }]
+            }
+        ];
+
+        let currentScene = 0;
+        let isTyping = false;
+        let typeTimer;
+        
+        const uiBg = document.getElementById('scene-bg');
+        const uiSprite = document.getElementById('character-sprite');
+        const uiName = document.getElementById('name-tag');
+        const uiText = document.getElementById('dialogue-text');
+        const uiChoices = document.getElementById('choices-container');
+
+        // Función para escribir el texto letra por letra (Efecto máquina de escribir)
+        function typeWriter(htmlText, index, callback) {
+            isTyping = true;
+            // Al tener etiquetas HTML, es más seguro simplemente inyectar todo el texto con un fade,
+            // pero para emular el RPG, usaremos un truco visual para el HTML
+            uiText.innerHTML = htmlText;
+            uiText.style.opacity = 0;
+            
+            // Animación CSS rápida en lugar de letra por letra para evitar romper el HTML interno
+            let op = 0;
+            typeTimer = setInterval(() => {
+                if (op >= 1) {
+                    clearInterval(typeTimer);
+                    isTyping = false;
+                    if (callback) callback();
+                }
+                uiText.style.opacity = op;
+                op += 0.05;
+            }, 30);
+        }
+
+        // Cargar una escena específica
+        function loadScene(index) {
+            const scene = story[index];
+            currentScene = index;
+
+            // Limpiar interfaz
+            uiChoices.innerHTML = '';
+            uiText.innerHTML = '';
+            
+            // Cambiar fondo y sprite
+            uiBg.className = scene.bg;
+            
+            uiSprite.classList.remove('show-sprite');
+            setTimeout(() => {
+                uiSprite.innerText = scene.sprite;
+                uiSprite.classList.add('show-sprite');
+            }, 200);
+
+            // Cambiar nombre
+            uiName.innerText = scene.name;
+            
+            // Estilos del nombre
+            if(scene.name === "[ ALERTA DEL SISTEMA ]" || scene.name === "Sistema") {
+                uiName.style.background = '#ff5252';
+                uiName.style.color = '#fff';
+            } else {
+                uiName.style.background = '#6c63ff';
+                uiName.style.color = '#fff';
+            }
+
+            // Escribir texto
+            typeWriter(scene.text, 0, () => {
+                // Mostrar botones al terminar
+                scene.choices.forEach(choice => {
+                    const btn = document.createElement('div');
+                    btn.className = 'choice-btn';
+                    btn.innerText = choice.text;
+                    btn.onclick = () => loadScene(choice.next);
+                    uiChoices.appendChild(btn);
+                    
+                    // Hacer visible el botón
+                    setTimeout(() => btn.style.display = 'block', 100);
+                });
+            });
+        }
+
+        // Iniciar el juego
+        window.onload = () => {
+            loadScene(0);
+        };
+    </script>
+</body>
+</html>
