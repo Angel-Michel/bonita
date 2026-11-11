@@ -65,7 +65,9 @@
             transition: all 0.5s ease;
             opacity: 0;
             transform: translateY(20px);
-            filter: drop-shadow(0 0 15px rgba(255,255,255,0.2));
+            /* Transparencia automática: el fondo oscuro del GIF se integra con el fondo del juego */
+            mix-blend-mode: screen;
+            filter: brightness(1.1) drop-shadow(0 0 15px rgba(0, 243, 255, 0.25));
         }
 
         .show-sprite { opacity: 1 !important; transform: translateY(0) !important; }
@@ -910,7 +912,7 @@
 
     <!-- CONTENEDOR DE LA NOVELA VISUAL -->
     <div id="vn-container">
-        <!-- SPRITE DEL PERSONAJE: JS inyecta <img> o <video id="character-sprite"> según la extensión -->
+        <!-- SPRITE DEL PERSONAJE (imágenes y GIFs estándar) -->
         <img id="character-sprite" src="" alt="Personaje">
         
         <div id="dialogue-box">
@@ -945,14 +947,14 @@
             },
             {
                 name: "Ángel (Admin)",
-                image: "fusion.mp4", // Aquí pondrías un sprite tipo anime o sombra
+                image: "taiki.gif", // Aquí pondrías un sprite tipo anime o sombra
                 bg: "bg-hero",
                 text: "Tranquila. He hackeado la interfaz. Sé que te encantan las buenas historias de ficción, los manhwas y los misterios...",
                 choices: [{ text: "Así es...", next: 3 }, { text: "¿Quién eres?", next: 3 }]
             },
             {
                 name: "Ángel (Admin)",
-                image: "fusion.mp4",
+                image: "taiki.gif",
                 bg: "bg-hero",
                 text: "Barry Allen puede romper la barrera del tiempo, Dick Grayson tiene la agilidad perfecta y Saitama acaba con todo de un golpe...",
                 choices: [{ text: "Sigue...", next: 4 }]
@@ -964,7 +966,7 @@
         let typeTimer;
         
         const uiBg = document.getElementById('scene-bg');
-        let uiSprite = document.getElementById('character-sprite');
+        const uiSprite = document.getElementById('character-sprite');
         const uiName = document.getElementById('name-tag');
         const uiText = document.getElementById('dialogue-text');
         const uiChoices = document.getElementById('choices-container');
@@ -972,41 +974,12 @@
         const uiVnContainer = document.getElementById('vn-container');
         const uiFlashOverlay = document.getElementById('flash-overlay');
 
-        // Carga el sprite del personaje: <img> para imágenes, <video> para archivos de video
-        // (intercambia el elemento según la extensión, conservando el id y los estilos CSS)
+        // Carga el sprite del personaje: siempre <img> estándar (imágenes y GIFs)
         function setCharacterSprite(source) {
-            const isVideo = /\.(mp4|webm|ogv|mov)$/i.test(source || '');
-            const wanted = isVideo ? 'video' : 'img';
-
-            if (uiSprite.tagName.toLowerCase() !== wanted) {
-                let el;
-                if (isVideo) {
-                    el = document.createElement('video');
-                    el.autoplay = true;
-                    el.loop = true;
-                    el.muted = true;
-                    el.playsInline = true;
-                } else {
-                    el = document.createElement('img');
-                    el.alt = 'Personaje';
-                }
-                el.id = 'character-sprite';
-                el.src = source;
-                uiSprite.replaceWith(el);
-                uiSprite = el;
-            } else {
-                uiSprite.src = source;
-            }
-
-            // Forzar reproducción del video al cambiar de escena
-            if (isVideo) {
-                uiSprite.load();
-                const playPromise = uiSprite.play();
-                if (playPromise && playPromise.catch) playPromise.catch(() => {});
-            }
+            uiSprite.src = source;
         }
 
-        // Muestra el sprite con su transición (doble rAF para que anime aunque el elemento sea nuevo)
+        // Muestra el sprite con su transición de aparición
         function showSprite() {
             requestAnimationFrame(() => requestAnimationFrame(() => uiSprite.classList.add('show-sprite')));
         }
@@ -1027,8 +1000,8 @@
         const uiLockOverlay = document.getElementById('lock-overlay');
         const uiLockText = document.getElementById('lock-overlay-text');
 
-        // Función para escribir el texto
-        function typeWriter(htmlText, index, callback) {
+        // Función para escribir el texto (fade-in progresivo)
+        function typeWriter(htmlText, callback) {
             isTyping = true;
             uiText.innerHTML = htmlText;
             uiText.style.opacity = 0;
@@ -1054,7 +1027,7 @@
             uiText.innerHTML = '';
             uiBg.className = scene.bg;
             
-            // Cargar imagen o video del personaje
+            // Cargar el sprite del personaje
             uiSprite.classList.remove('show-sprite');
             setTimeout(() => {
                 setCharacterSprite(scene.image);
@@ -1078,7 +1051,7 @@
                 uiDialogueBox.style.boxShadow = '0 0 20px rgba(0, 243, 255, 0.4), inset 0 0 15px rgba(0, 243, 255, 0.2)';
             }
 
-            typeWriter(scene.text, 0, () => {
+            typeWriter(scene.text, () => {
                 scene.choices.forEach(choice => {
                     const btn = document.createElement('div');
                     btn.className = 'choice-btn';
@@ -1092,13 +1065,13 @@
 
         // --- PRÓLOGO: CUTSCINE CINEMÁTICA ---
         const prologueLines = [
-            { name: "Ángel", image: "fusion.mp4", text: "La tarde está perfecta hoy, ¿no crees? Siento que este momento podría durar para siempre." },
+            { name: "Ángel", image: "taiki.gif", text: "La tarde está perfecta hoy, ¿no crees? Siento que este momento podría durar para siempre." },
             { name: "Marely", image: null, text: "Sí, todo está muy tranquilo..." },
             // --- Aquí ocurre la RUPTURA DIMENSIONAL ---
             { name: "Marely", image: null, text: "¿Ángel...? ¿Qué está pasando? El cielo se está rompiendo." },
-            { name: "Ángel", image: "fusion.mp4", text: "Es una fisura dimensional... te están arrastrando al otro lado." },
+            { name: "Ángel", image: "taiki.gif", text: "Es una fisura dimensional... te están arrastrando al otro lado." },
             { name: "Marely", image: null, text: "¡No, Ángel! ¡No me sueltes!" },
-            { name: "Ángel", image: "fusion.mp4", text: "Escúchame bien. No importa a qué dimensión vayas, ni a quién tengas que enfrentar. Te voy a esperar. Sobrevive y encuentra el camino de regreso a mí." }
+            { name: "Ángel", image: "taiki.gif", text: "Escúchame bien. No importa a qué dimensión vayas, ni a quién tengas que enfrentar. Te voy a esperar. Sobrevive y encuentra el camino de regreso a mí." }
         ];
 
         let prologueActive = false;
@@ -1135,7 +1108,7 @@
                 setCharacterSprite(sprite);
                 showSprite();
             }, 200);
-            typeWriter(line.text, 0, null);
+            typeWriter(line.text);
         }
 
         // Efecto de ruptura: la caja desaparece, la pantalla tiembla con glitch y el fondo oscila a oscuro
