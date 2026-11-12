@@ -29,7 +29,18 @@
         .bg-system { background: radial-gradient(circle at center, #1a0b2e 0%, #000000 100%); }
         .bg-hero { background: radial-gradient(circle at top, #0d1b2a 0%, #000000 100%); }
         .bg-romance { background: linear-gradient(to bottom, #2b1055 0%, #7597de 100%); }
-        .bg-atardecer { background-image: url('atardecer.jpg'); }
+        .bg-room {
+            background-image: url('habitacion_nexus.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        #scene-bg.bg-atardecer {
+            background-image: url('atardecer_anime.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
 
         /* Efecto de estática (Misterio/Gotham) */
         #fx-overlay {
@@ -54,32 +65,39 @@
             padding-bottom: 5vh;
         }
 
-        /* Contenedor de Imagen del Personaje (Reemplaza a los emojis) */
+        /* Sprite del Personaje (PNG transparente, estilo novela visual japonesa) */
         #character-sprite {
-            width: 100%;
-            max-width: 400px;
-            height: 45vh; /* Ocupa casi la mitad de la pantalla */
+            position: absolute;
+            right: 5%;
+            bottom: 0;
+            height: 75vh;
+            max-width: 50vw;
+            width: auto;
             object-fit: contain;
-            object-position: bottom;
-            margin-bottom: -10px;
+            object-position: bottom right;
             transition: all 0.5s ease;
-            opacity: 0;
+            opacity: 1;
             transform: translateY(20px);
-            /* Transparencia automática: el fondo oscuro del GIF se integra con el fondo del juego */
-            mix-blend-mode: screen;
-            filter: brightness(1.1) drop-shadow(0 0 15px rgba(0, 243, 255, 0.25));
+            filter: drop-shadow(0 0 15px rgba(0, 243, 255, 0.25));
+            z-index: 5;
         }
 
         .show-sprite { opacity: 1 !important; transform: translateY(0) !important; }
 
         /* Caja de diálogo - ESTILO MANHWA / HOLOGRAMA */
         #dialogue-box {
-            width: 90%; max-width: 700px;
+            position: absolute;
+            bottom: 5vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            max-width: 900px;
+            z-index: 20;
+            box-sizing: border-box;
             background: rgba(10, 15, 30, 0.7); /* Más transparente */
             border: 2px solid #00f3ff; /* Borde cyan estilo sistema */
             border-radius: 8px;
             padding: 30px 25px 20px 25px;
-            position: relative;
             /* Efecto de brillo de pantalla (Glow) */
             box-shadow: 0 0 20px rgba(0, 243, 255, 0.4), inset 0 0 15px rgba(0, 243, 255, 0.2);
             backdrop-filter: blur(8px); /* Efecto cristal */
@@ -550,16 +568,20 @@
             justify-content: center;
         }
 
-        /* Flotación suave de la vista previa (con escala para cubrir el marco) */
+        /* Flotación suave de la vista previa (sin recortar la imagen) */
         @keyframes float-preview {
-            0%, 100% { transform: translateY(0) scale(1.06); }
-            50% { transform: translateY(-12px) scale(1.06); }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
         }
 
         #avatar-preview {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            width: 90%;
+            height: 90%;
+            object-fit: contain;
+            object-position: center;
+            opacity: 1;
+            filter: none;
+            mix-blend-mode: normal;
             animation: float-preview 3.5s ease-in-out infinite;
         }
 
@@ -828,6 +850,143 @@
             transition: opacity 0.6s ease, background-color 0.9s ease;
         }
 
+        /* --- BOTÓN Y MENÚ LATERAL DE PAUSA --- */
+        #pause-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 590;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 52px;
+            height: 52px;
+            font-size: 1.6rem;
+            line-height: 1;
+            color: #00f3ff;
+            background: rgba(5, 2, 12, 0.75);
+            border: 2px solid #00f3ff;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.45), inset 0 0 10px rgba(0, 243, 255, 0.15);
+            text-shadow: 0 0 8px rgba(0, 243, 255, 0.8);
+            transition: all 0.25s ease;
+            backdrop-filter: blur(6px);
+        }
+
+        #pause-btn.visible { display: flex; }
+
+        #pause-btn:hover, #pause-btn:active {
+            background: #00f3ff;
+            color: #000;
+            text-shadow: none;
+            box-shadow: 0 0 28px rgba(0, 243, 255, 0.9);
+            transform: scale(1.06);
+        }
+
+        #pause-menu {
+            position: fixed;
+            inset: 0;
+            z-index: 600;
+            display: flex;
+            justify-content: flex-end;
+            background: rgba(2, 2, 10, 0.6);
+            backdrop-filter: blur(6px);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        #pause-menu.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .pause-panel {
+            width: 100%;
+            max-width: 340px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 18px;
+            padding: 40px 28px;
+            box-sizing: border-box;
+            background: linear-gradient(160deg, rgba(10, 6, 24, 0.97) 0%, rgba(3, 8, 20, 0.97) 100%);
+            border-left: 2px solid #00f3ff;
+            box-shadow: -10px 0 40px rgba(0, 243, 255, 0.25), inset 0 0 30px rgba(0, 243, 255, 0.08);
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        #pause-menu.active .pause-panel { transform: translateX(0); }
+
+        .pause-title {
+            font-family: 'VT323', monospace;
+            font-size: clamp(1.6rem, 5vw, 2.4rem);
+            letter-spacing: 4px;
+            margin: 0;
+            color: #00f3ff;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.8), 0 0 30px rgba(0, 243, 255, 0.4);
+        }
+
+        .pause-status {
+            font-family: 'VT323', monospace;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            color: #ff5252;
+            text-shadow: 0 0 8px rgba(255, 82, 82, 0.7);
+            border-bottom: 1px solid rgba(0, 243, 255, 0.25);
+            padding-bottom: 18px;
+            margin-bottom: 8px;
+        }
+
+        .pause-option {
+            font-family: 'VT323', monospace;
+            font-size: 1.3rem;
+            letter-spacing: 2px;
+            text-align: left;
+            padding: 14px 18px;
+            color: #00f3ff;
+            background: rgba(0, 243, 255, 0.06);
+            border: 1px solid rgba(0, 243, 255, 0.45);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-shadow: 0 0 8px rgba(0, 243, 255, 0.6);
+        }
+
+        .pause-option:hover, .pause-option:active {
+            background: #00f3ff;
+            color: #000;
+            text-shadow: none;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.75);
+            transform: translateX(-4px);
+        }
+
+        .pause-option.save {
+            color: #00e676;
+            border-color: rgba(0, 230, 118, 0.5);
+            background: rgba(0, 230, 118, 0.06);
+            text-shadow: 0 0 8px rgba(0, 230, 118, 0.6);
+            margin-top: 12px;
+        }
+
+        .pause-option.save:hover, .pause-option.save:active {
+            background: #00e676;
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 230, 118, 0.8);
+        }
+
+        /* Mensaje de guardado (reutiliza el overlay del sistema) */
+        #lock-overlay.save-mode #lock-overlay-text {
+            color: #00e676;
+            text-shadow: 0 0 10px rgba(0, 230, 118, 0.9), 0 0 30px rgba(0, 230, 118, 0.6), 0 0 60px rgba(0, 230, 118, 0.4);
+            animation: none;
+        }
+
     </style>
 </head>
 <body>
@@ -855,7 +1014,7 @@
             <!-- Columna izquierda: vista previa del avatar -->
             <div id="creator-preview">
                 <div id="preview-frame">
-                    <img id="avatar-preview" src="chica_neutral.gif" alt="Avatar">
+                    <img id="avatar-preview" src="neutral.png" alt="Avatar">
                 </div>
                 <div id="preview-label">ATUENDO ACTUAL: NEUTRAL</div>
             </div>
@@ -906,13 +1065,27 @@
     <!-- DESTELLO BLANCO/NEGRO (TRANSICIÓN DEL PRÓLOGO) -->
     <div id="flash-overlay"></div>
 
+    <!-- BOTÓN DE PAUSA (visible solo durante la novela) -->
+    <button id="pause-btn" aria-label="Menú de pausa">☰</button>
+
+    <!-- MENÚ LATERAL DE PAUSA -->
+    <div id="pause-menu">
+        <div class="pause-panel">
+            <h2 class="pause-title">SISTEMA NEXUS</h2>
+            <div class="pause-status" id="pause-status">SISTEMA EN PAUSA</div>
+            <button class="pause-option" id="resume-btn">▶ Reanudar</button>
+            <button class="pause-option" id="pause-toggle-btn">❚❚ Pausar / Opciones</button>
+            <button class="pause-option save" id="save-exit-btn">💾 Guardar Avance y Salir</button>
+        </div>
+    </div>
+
     <!-- FONDO Y EFECTOS -->
     <div id="scene-bg" class="bg-system"></div>
     <div id="fx-overlay"></div>
 
     <!-- CONTENEDOR DE LA NOVELA VISUAL -->
     <div id="vn-container">
-        <!-- SPRITE DEL PERSONAJE (imágenes y GIFs estándar) -->
+        <!-- SPRITE DEL PERSONAJE (PNG transparente en <img>) -->
         <img id="character-sprite" src="" alt="Personaje">
         
         <div id="dialogue-box">
@@ -932,37 +1105,59 @@
         // Nota: En 'image', pon la URL o ruta local de las imágenes PNG que quieras usar.
         const story = [
             {
+                name: "Sistema",
+                image: null, // Sprite de la protagonista con el atuendo elegido
+                bg: "bg-room",
+                text: "<span class='system-text'>Sincronización multiversal completada. Despiertas desorientada en una cámara de sincronización de alta tecnología. La energía del Nexo vibra a tu alrededor. Objeto inicial detectado: {{ITEM}}. Materialización exitosa a tu lado.</span>",
+                choices: [{ text: "[ Incorporarme y mirar a mi alrededor ]", next: 1 }]
+            },
+            {
                 name: "[ ALERTA DEL SISTEMA ]",
                 image: "https://cdn-icons-png.flaticon.com/512/8682/8682914.png", // Imagen de sistema/holograma
                 bg: "bg-system",
                 text: "<span class='system-text'>Buscando en el multiverso... Escaneando Ciudad Gótica y Ciudad Central... Escaneando Asociación de Héroes...</span>",
-                choices: [{ text: "[ Ver resultados ]", next: 1 }]
+                choices: [{ text: "[ Ver resultados ]", next: 2 }]
             },
             {
                 name: "[ ALERTA DEL SISTEMA ]",
                 image: "https://cdn-icons-png.flaticon.com/512/8682/8682914.png",
                 bg: "bg-system",
                 text: "<span class='system-text'>ERROR. Ningún héroe registrado cumple con los requisitos. Se requiere a la protagonista principal. Identidad confirmada: MARELY.</span>",
-                choices: [{ text: "¿Qué está pasando?", next: 2 }]
+                choices: [{ text: "¿Qué está pasando?", next: 3 }]
             },
             {
                 name: "Ángel (Admin)",
-                image: "taiki.gif", // Aquí pondrías un sprite tipo anime o sombra
+                image: "angel.png", // Sprite del admin Ángel
                 bg: "bg-hero",
                 text: "Tranquila. He hackeado la interfaz. Sé que te encantan las buenas historias de ficción, los manhwas y los misterios...",
-                choices: [{ text: "Así es...", next: 3 }, { text: "¿Quién eres?", next: 3 }]
+                choices: [{ text: "Así es...", next: 4 }, { text: "¿Quién eres?", next: 4 }]
             },
             {
                 name: "Ángel (Admin)",
-                image: "taiki.gif",
+                image: "angel.png",
                 bg: "bg-hero",
                 text: "Barry Allen puede romper la barrera del tiempo, Dick Grayson tiene la agilidad perfecta y Saitama acaba con todo de un golpe...",
-                choices: [{ text: "Sigue...", next: 4 }]
+                choices: [{ text: "Sigue...", next: 5 }]
+            },
+            {
+                name: "Guardián del Nexo",
+                image: "angel.png", // Placeholder: cambia por guardian_nexo.png cuando lo tengas
+                bg: "bg-room",
+                text: "Así que por fin despiertas, viajera. Estás en una cámara de tránsito del Nexo. El objeto que llevas contigo es la primera pieza de tu nueva historia.",
+                choices: [{ text: "¿Quién eres?", next: 6 }, { text: "¿Dónde estoy?", next: 6 }]
+            },
+            {
+                name: "Guardián del Nexo",
+                image: "angel.png", // Placeholder: cambia por guardian_nexo.png cuando lo tengas
+                bg: "bg-room",
+                text: "Soy el primero de los guardianes que custodiarán tu camino. Bienvenida al Nexo, MARELY. Descansa por ahora... el siguiente capítulo se escribirá cuando el Sistema vuelva a llamarte.",
+                choices: []
             }
         ];
 
         let currentScene = 0;
         let isTyping = false;
+        let isPaused = false;
         let typeTimer;
         
         const uiBg = document.getElementById('scene-bg');
@@ -974,7 +1169,7 @@
         const uiVnContainer = document.getElementById('vn-container');
         const uiFlashOverlay = document.getElementById('flash-overlay');
 
-        // Carga el sprite del personaje: siempre <img> estándar (imágenes y GIFs)
+        // Carga el sprite del personaje: siempre <img> con PNG transparente
         function setCharacterSprite(source) {
             uiSprite.src = source;
         }
@@ -999,6 +1194,12 @@
         const uiPlayerNameInput = document.getElementById('playerNameInput');
         const uiLockOverlay = document.getElementById('lock-overlay');
         const uiLockText = document.getElementById('lock-overlay-text');
+        const uiPauseBtn = document.getElementById('pause-btn');
+        const uiPauseMenu = document.getElementById('pause-menu');
+        const uiPauseStatus = document.getElementById('pause-status');
+        const uiResumeBtn = document.getElementById('resume-btn');
+        const uiPauseToggleBtn = document.getElementById('pause-toggle-btn');
+        const uiSaveExitBtn = document.getElementById('save-exit-btn');
 
         // Función para escribir el texto (fade-in progresivo)
         function typeWriter(htmlText, callback) {
@@ -1018,6 +1219,18 @@
             }, 30);
         }
 
+        // Resuelve el nombre del hablante: los placeholders de la protagonista usan playerName
+        function resolvePlayerName(name) {
+            return (name === 'Marely' || name === '[PROTAGONISTA]') ? playerName : name;
+        }
+
+        // Reemplaza las menciones a la protagonista dentro del texto por el nombre elegido
+        function resolvePlayerText(text) {
+            return text
+                .replace(/MARELY|Marely/g, () => playerName)
+                .replace(/\{\{ITEM\}\}/g, () => playerItem);
+        }
+
         // Cargar una escena específica
         function loadScene(index) {
             const scene = story[index];
@@ -1026,15 +1239,17 @@
             uiChoices.innerHTML = '';
             uiText.innerHTML = '';
             uiBg.className = scene.bg;
+            uiBg.style.backgroundImage = ''; // Limpia fondos inline (ej. cielo_roto.jpg) al cambiar de escena
             
-            // Cargar el sprite del personaje
+            // Cargar el sprite del personaje (si la escena no define uno, usa el atuendo elegido)
             uiSprite.classList.remove('show-sprite');
             setTimeout(() => {
-                setCharacterSprite(scene.image);
+                const sprite = scene.image || avatarImages[playerOutfit] || 'neutral.png';
+                setCharacterSprite(sprite);
                 showSprite();
             }, 200);
 
-            uiName.innerText = scene.name;
+            uiName.innerText = resolvePlayerName(scene.name);
             
             // Cambiar color del cuadro y nombre según quién habla
             if(scene.name === "[ ALERTA DEL SISTEMA ]" || scene.name === "Sistema") {
@@ -1051,7 +1266,7 @@
                 uiDialogueBox.style.boxShadow = '0 0 20px rgba(0, 243, 255, 0.4), inset 0 0 15px rgba(0, 243, 255, 0.2)';
             }
 
-            typeWriter(scene.text, () => {
+            typeWriter(resolvePlayerText(scene.text), () => {
                 scene.choices.forEach(choice => {
                     const btn = document.createElement('div');
                     btn.className = 'choice-btn';
@@ -1065,13 +1280,13 @@
 
         // --- PRÓLOGO: CUTSCINE CINEMÁTICA ---
         const prologueLines = [
-            { name: "Ángel", image: "taiki.gif", text: "La tarde está perfecta hoy, ¿no crees? Siento que este momento podría durar para siempre." },
+            { name: "Ángel", image: "angel.png", text: "La tarde está perfecta hoy, ¿no crees? Siento que este momento podría durar para siempre." },
             { name: "Marely", image: null, text: "Sí, todo está muy tranquilo..." },
             // --- Aquí ocurre la RUPTURA DIMENSIONAL ---
             { name: "Marely", image: null, text: "¿Ángel...? ¿Qué está pasando? El cielo se está rompiendo." },
-            { name: "Ángel", image: "taiki.gif", text: "Es una fisura dimensional... te están arrastrando al otro lado." },
+            { name: "Ángel", image: "angel.png", text: "Es una fisura dimensional... te están arrastrando al otro lado." },
             { name: "Marely", image: null, text: "¡No, Ángel! ¡No me sueltes!" },
-            { name: "Ángel", image: "taiki.gif", text: "Escúchame bien. No importa a qué dimensión vayas, ni a quién tengas que enfrentar. Te voy a esperar. Sobrevive y encuentra el camino de regreso a mí." }
+            { name: "Ángel", image: "angel.png", text: "Escúchame bien. No importa a qué dimensión vayas, ni a quién tengas que enfrentar. Te voy a esperar. Sobrevive y encuentra el camino de regreso a mí." }
         ];
 
         let prologueActive = false;
@@ -1082,6 +1297,10 @@
             prologueActive = true;
             prologueBusy = false;
             prologueIndex = 0;
+            isPaused = false;
+
+            // El botón de pausa solo está disponible durante la novela
+            uiPauseBtn.classList.add('visible');
 
             // Fondo del atardecer tranquilo
             uiBg.className = 'bg-atardecer';
@@ -1098,24 +1317,25 @@
             showPrologueLine(0);
         }
 
-        // Marely usa el atuendo elegido en la creación del avatar
+        // La protagonista usa el nombre y el atuendo elegidos en la creación del avatar
         function showPrologueLine(i) {
             const line = prologueLines[i];
-            const sprite = line.image || avatarImages[playerOutfit] || 'chica_neutral.gif';
-            uiName.innerText = line.name;
+            const sprite = line.image || avatarImages[playerOutfit] || 'neutral.png';
+            uiName.innerText = resolvePlayerName(line.name);
             uiSprite.classList.remove('show-sprite');
             setTimeout(() => {
                 setCharacterSprite(sprite);
                 showSprite();
             }, 200);
-            typeWriter(line.text);
+            typeWriter(resolvePlayerText(line.text));
         }
 
-        // Efecto de ruptura: la caja desaparece, la pantalla tiembla con glitch y el fondo oscila a oscuro
+        // Efecto de ruptura: la caja desaparece, la pantalla tiembla con glitch y el cielo se rompe
         function playBreakEffect(done) {
             prologueBusy = true;
             uiDialogueBox.style.opacity = '0';
             uiSprite.classList.remove('show-sprite');
+            uiBg.style.backgroundImage = "url('cielo_roto.jpg')";
             uiVnContainer.classList.add('glitch-mode');
             uiBg.classList.add('bg-dark-flicker');
             setTimeout(() => {
@@ -1124,7 +1344,7 @@
                 uiDialogueBox.style.opacity = '1';
                 prologueBusy = false;
                 if (done) done();
-            }, 3000);
+            }, 3500);
         }
 
         // Destello blanco → negro absoluto → escena de ALERTA DEL SISTEMA
@@ -1149,6 +1369,7 @@
 
         // Avance del prólogo: clic para continuar (clic durante el texto lo completa al instante)
         uiVnContainer.addEventListener('click', () => {
+            if (isPaused) return;
             if (!prologueActive || prologueBusy) return;
             if (isTyping) {
                 clearInterval(typeTimer);
@@ -1167,6 +1388,116 @@
             }
         });
 
+        // --- MENÚ LATERAL DE PAUSA ---
+        let toastTimer;
+
+        function openPauseMenu() {
+            isPaused = true;
+            uiPauseStatus.innerText = 'SISTEMA EN PAUSA';
+            uiPauseToggleBtn.innerText = '❚❚ Pausar / Opciones';
+            uiPauseMenu.classList.add('active');
+        }
+
+        function closePauseMenu() {
+            uiPauseMenu.classList.remove('active');
+        }
+
+        function showSystemToast(message) {
+            clearTimeout(toastTimer);
+            uiLockText.innerText = message;
+            uiLockOverlay.classList.add('show', 'save-mode');
+            toastTimer = setTimeout(() => {
+                uiLockOverlay.classList.remove('show', 'save-mode');
+            }, 1400);
+        }
+
+        function saveAndExit() {
+            const saveData = {
+                name: playerName,
+                outfit: playerOutfit,
+                item: playerItem,
+                scene: currentScene,
+                prologueIndex: prologueIndex,
+                savedAt: new Date().toISOString()
+            };
+            try { localStorage.setItem('nexusSave', JSON.stringify(saveData)); } catch (e) {}
+            closePauseMenu();
+            isPaused = false;
+            showSystemToast('💾 AVANCE GUARDADO EN EL SISTEMA NEXUS');
+            setTimeout(resetToTitle, 1600);
+        }
+
+        function resetToTitle() {
+            clearTimeout(toastTimer);
+            uiLockOverlay.classList.remove('show', 'save-mode');
+            closePauseMenu();
+            uiPauseBtn.classList.remove('visible');
+
+            prologueActive = false;
+            prologueBusy = false;
+            prologueIndex = 0;
+            currentScene = 0;
+            isPaused = false;
+            isTyping = false;
+            clearInterval(typeTimer);
+
+            uiVnContainer.classList.remove('glitch-mode');
+            uiBg.classList.remove('bg-dark-flicker');
+            uiBg.style.backgroundImage = '';
+            uiBg.className = 'bg-system';
+            uiFlashOverlay.style.display = 'none';
+            uiFlashOverlay.style.opacity = '0';
+            uiFlashOverlay.style.background = '#ffffff';
+            uiDialogueBox.style.opacity = '1';
+            uiChoices.innerHTML = '';
+            uiText.innerHTML = '';
+            uiSprite.classList.remove('show-sprite');
+            uiSprite.src = '';
+            uiName.innerText = 'Sistema';
+
+            playerName = 'Protagonista';
+            playerOutfit = 'Neutral';
+            playerItem = 'Chocolates de Menta 🍫';
+
+            uiPlayerNameInput.value = '';
+            uiOutfitOptions.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+            uiItemOptions.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+            uiAvatarPreview.src = 'neutral.png';
+            uiPreviewLabel.innerText = 'ATUENDO ACTUAL: NEUTRAL';
+
+            uiCharModal.classList.remove('active');
+            uiCharModal.style.display = '';
+            uiCharGrid.innerHTML = '';
+            charsBuilt = false;
+            uiCreatorModal.classList.remove('active', 'fade-out');
+            uiCreatorModal.style.display = '';
+            uiLinkBtn.disabled = false;
+            uiLinkBtn.style.animation = '';
+
+            uiTitleScreen.style.display = '';
+            uiTitleScreen.classList.remove('fade-out');
+            uiStartBtn.disabled = false;
+            uiStartBtn.style.animation = '';
+        }
+
+        uiPauseBtn.addEventListener('click', openPauseMenu);
+        uiResumeBtn.addEventListener('click', () => {
+            isPaused = false;
+            closePauseMenu();
+        });
+        uiPauseToggleBtn.addEventListener('click', () => {
+            isPaused = !isPaused;
+            uiPauseStatus.innerText = isPaused ? 'SISTEMA EN PAUSA' : 'ENLACE ACTIVO';
+            uiPauseToggleBtn.innerText = isPaused ? '❚❚ Pausar / Opciones' : '▶ Reanudar / Opciones';
+        });
+        uiSaveExitBtn.addEventListener('click', saveAndExit);
+        uiPauseMenu.addEventListener('click', (e) => {
+            if (e.target === uiPauseMenu) {
+                isPaused = false;
+                closePauseMenu();
+            }
+        });
+
         // --- PERSONAJES SELECCIONABLES (bloqueados hasta avanzar en el Modo Historia) ---
         const selectableChars = [
             { name: "VEGETA", image: "vegueta.gif" },
@@ -1177,8 +1508,8 @@
         ];
 
         // Variables globales del avatar del jugador
-        let playerName = "Marely";
-        let playerOutfit = "Ropa Casual";
+        let playerName = "Protagonista";
+        let playerOutfit = "Neutral";
         let playerItem = "Chocolates de Menta 🍫";
 
         let charsBuilt = false;
@@ -1212,9 +1543,10 @@
         // --- CREACIÓN DE AVATAR ---
         // Imágenes del avatar según el atuendo
         const avatarImages = {
-            "Traje de Héroe": "heroe.gif",
-            "Ropa Casual": "ropa_casual.gif",
-            "Armadura Ligera": "armadura.gif"
+            "Neutral": "neutral.png",
+            "Traje de Héroe": "traje_heroe.png",
+            "Ropa Casual": "ropa_casual.png",
+            "Armadura Ligera": "armadura.png"
         };
 
         // Cambiar la imagen de vista previa al instante
@@ -1260,7 +1592,14 @@
 
         // Al hacer clic en iniciar enlace: guardar selecciones y empezar la historia
         uiLinkBtn.addEventListener('click', () => {
-            playerName = uiPlayerNameInput.value.trim() || "Marely";
+            const enteredName = uiPlayerNameInput.value.trim();
+            if (!enteredName) {
+                alert('El Sistema requiere un nombre. Ingresa el nombre de tu protagonista antes de iniciar el enlace.');
+                uiPlayerNameInput.focus();
+                return;
+            }
+
+            playerName = enteredName;
             const outfitSelected = uiOutfitOptions.querySelector('.option-btn.selected');
             const itemSelected = uiItemOptions.querySelector('.option-btn.selected');
             if (outfitSelected) playerOutfit = outfitSelected.dataset.value;
