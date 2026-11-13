@@ -79,7 +79,7 @@
             opacity: 1;
             transform: translateY(20px);
             filter: drop-shadow(0 0 15px rgba(0, 243, 255, 0.25));
-            z-index: 5;
+            z-index: 10;
         }
 
         .show-sprite { opacity: 1 !important; transform: translateY(0) !important; }
@@ -987,6 +987,227 @@
             animation: none;
         }
 
+        /* --- FASE DE EXPLORACIÓN POINT & CLICK BIDIRECCIONAL --- */
+        #exploration-stage {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            display: none;
+            pointer-events: none;
+        }
+
+        #exploration-stage.active { display: block; }
+        #exploration-stage button { pointer-events: auto; }
+
+        /* Cofre secreto (solo en el Laboratorio) */
+        #secret-chest {
+            position: absolute;
+            left: 8%;
+            bottom: 35%;
+            width: 120px;
+            height: auto;
+            object-fit: contain;
+            z-index: 100;
+            display: none;
+            cursor: pointer;
+            pointer-events: auto;
+            filter: drop-shadow(0 0 15px rgba(0, 255, 255, 0.9));
+            animation: chest-float 3s ease-in-out infinite;
+            transition: transform 0.25s ease, filter 0.25s ease;
+        }
+
+        #secret-chest:hover, #secret-chest:active {
+            transform: scale(1.12);
+            filter: drop-shadow(0 0 22px rgba(0, 255, 255, 1));
+        }
+
+        @keyframes chest-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        /* Navegación entre habitaciones */
+        #nav-arrow-left,
+        #nav-arrow-back,
+        #nav-arrow-forward {
+            position: absolute;
+            bottom: 50%;
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 22px;
+            font-family: 'VT323', monospace;
+            font-size: clamp(1rem, 2.6vw, 1.35rem);
+            letter-spacing: 2px;
+            color: #00f3ff;
+            background: rgba(5, 2, 12, 0.75);
+            border: 2px solid #00f3ff;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 0 18px rgba(0, 243, 255, 0.45), inset 0 0 12px rgba(0, 243, 255, 0.12);
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.8);
+            backdrop-filter: blur(6px);
+            transition: all 0.25s ease;
+            white-space: nowrap;
+        }
+
+        #nav-arrow-left { left: 5%; bottom: 40%; }
+        #nav-arrow-forward { left: 8%; bottom: 15%; }
+        #nav-arrow-back { right: 5%; top: 20%; bottom: auto; }
+
+        #nav-arrow-left:hover, #nav-arrow-left:active,
+        #nav-arrow-forward:hover, #nav-arrow-forward:active,
+        #nav-arrow-back:hover, #nav-arrow-back:active {
+            background: #00f3ff;
+            color: #000;
+            text-shadow: none;
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.9);
+        }
+
+        #nav-arrow-left:hover, #nav-arrow-left:active { transform: translateX(-4px); }
+        #nav-arrow-forward:hover, #nav-arrow-forward:active { transform: translateX(4px); }
+        #nav-arrow-back:hover, #nav-arrow-back:active { transform: translateX(4px); }
+
+        /* Visibilidad según la habitación */
+        #exploration-stage.lab #secret-chest { display: block; }
+        #exploration-stage.nexus #nav-arrow-left { display: flex; }
+        #exploration-stage.lab #nav-arrow-back { display: flex; }
+        #exploration-stage.lab #nav-arrow-forward { display: flex; }
+
+        /* Fondo del laboratorio */
+        .bg-lab {
+            background-image: url('habitacion.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* --- MODAL: CAJA DE SUMINISTROS --- */
+        #letter-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(2, 2, 12, 0.8);
+            backdrop-filter: blur(9px);
+        }
+
+        #letter-modal.active {
+            display: flex;
+        }
+
+        .letter-paper {
+            width: 100%;
+            max-width: 620px;
+            padding: 38px 32px 30px;
+            box-sizing: border-box;
+            text-align: center;
+            border: 2px solid rgba(255, 215, 0, 0.65);
+            border-radius: 14px;
+            background:
+                radial-gradient(circle at 50% 0%, rgba(168, 85, 247, 0.18) 0%, transparent 60%),
+                linear-gradient(160deg, rgba(14, 8, 30, 0.97) 0%, rgba(4, 8, 22, 0.97) 100%);
+            box-shadow:
+                0 0 35px rgba(255, 215, 0, 0.35),
+                0 0 70px rgba(168, 85, 247, 0.25),
+                inset 0 0 30px rgba(0, 243, 255, 0.08);
+            transform: translateY(18px) scale(0.96);
+            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        #letter-modal.active .letter-paper {
+            transform: translateY(0) scale(1);
+        }
+
+        .letter-header {
+            font-family: 'VT323', monospace;
+            font-size: clamp(1.2rem, 4vw, 1.7rem);
+            letter-spacing: 2px;
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+            margin-bottom: 18px;
+        }
+
+        .letter-inventory {
+            display: flex;
+            justify-content: center;
+            gap: 22px;
+            padding: 18px 0;
+            margin-bottom: 20px;
+            border-top: 1px solid rgba(0, 243, 255, 0.2);
+            border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+        }
+
+        .letter-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            width: 120px;
+            font-family: 'VT323', monospace;
+            font-size: 1.05rem;
+            letter-spacing: 1px;
+            color: #00f3ff;
+            text-shadow: 0 0 8px rgba(0, 243, 255, 0.7);
+        }
+
+        .letter-item img {
+            width: auto;
+            height: auto;
+            max-width: 70px;
+            max-height: 70px;
+            object-fit: contain;
+            display: block;
+            filter: drop-shadow(0 0 10px rgba(0, 243, 255, 0.5));
+        }
+
+        .letter-body { margin-bottom: 26px; }
+
+        .letter-signature {
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            color: #ffb3ef;
+            text-shadow: 0 0 8px rgba(255, 43, 214, 0.6);
+            margin: 0 0 14px;
+        }
+
+        .letter-message {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(1rem, 2.8vw, 1.2rem);
+            font-style: italic;
+            line-height: 1.75;
+            color: #f3e8ff;
+            text-shadow: 0 0 12px rgba(168, 85, 247, 0.45);
+            margin: 0;
+        }
+
+        #close-letter-btn {
+            font-family: 'VT323', monospace;
+            font-size: 1.25rem;
+            letter-spacing: 3px;
+            padding: 12px 30px;
+            color: #00f3ff;
+            background: rgba(0, 243, 255, 0.07);
+            border: 2px solid #00f3ff;
+            border-radius: 6px;
+            cursor: pointer;
+            text-shadow: 0 0 8px rgba(0, 243, 255, 0.7);
+            transition: all 0.25s ease;
+        }
+
+        #close-letter-btn:hover, #close-letter-btn:active {
+            background: #00f3ff;
+            color: #000;
+            text-shadow: none;
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.9);
+            transform: scale(1.04);
+        }
+
     </style>
 </head>
 <body>
@@ -1098,6 +1319,39 @@
         </div>
     </div>
 
+    <!-- FASE DE EXPLORACIÓN POINT & CLICK BIDIRECCIONAL -->
+    <div id="exploration-stage">
+        <!-- Cámara Nexus -->
+        <img src="cofre.png" id="secret-chest" alt="Cofre secreto" title="Inspeccionar cofre">
+        <button id="nav-arrow-left" aria-label="Investigar laboratorio">❮ [ Investigar Laboratorio ]</button>
+
+        <!-- Laboratorio -->
+        <button id="nav-arrow-back" aria-label="Regresar a la cámara">[ Regresar a la Cámara ] ❯</button>
+        <button id="nav-arrow-forward" aria-label="Avanzar al encuentro">[ Avanzar ]</button>
+    </div>
+
+    <!-- MODAL: CAJA DE SUMINISTROS -->
+    <div id="letter-modal">
+        <div class="letter-paper">
+            <div class="letter-header">[ SISTEMA: CAJA DE SUMINISTROS DESBLOQUEADA ]</div>
+            <div class="letter-inventory">
+                <div class="letter-item">
+                    <img src="espada.png" alt="Arma Inicial">
+                    <span>Arma Inicial</span>
+                </div>
+                <div class="letter-item">
+                    <img src="flor.png" alt="Anomalía del Sistema">
+                    <span>Anomalía del Sistema</span>
+                </div>
+            </div>
+            <div class="letter-body">
+                <p class="letter-signature">Mensaje encriptado de Ángel:</p>
+                <p class="letter-message" id="letter-message">"..."</p>
+            </div>
+            <button id="close-letter-btn">[ Cerrar ]</button>
+        </div>
+    </div>
+
     <script>
         // --- MOTOR DE NOVELA VISUAL ---
         
@@ -1109,7 +1363,7 @@
                 image: null, // Sprite de la protagonista con el atuendo elegido
                 bg: "bg-room",
                 text: "<span class='system-text'>Sincronización multiversal completada. Despiertas desorientada en una cámara de sincronización de alta tecnología. La energía del Nexo vibra a tu alrededor. Objeto inicial detectado: {{ITEM}}. Materialización exitosa a tu lado.</span>",
-                choices: [{ text: "[ Incorporarme y mirar a mi alrededor ]", next: 1 }]
+                choices: [{ text: "[ Incorporarme y mirar a mi alrededor ]", action: "explore", next: 5 }]
             },
             {
                 name: "[ ALERTA DEL SISTEMA ]",
@@ -1158,6 +1412,8 @@
         let currentScene = 0;
         let isTyping = false;
         let isPaused = false;
+        let explorationActive = false;
+        let explorationNextIndex = 1;
         let typeTimer;
         
         const uiBg = document.getElementById('scene-bg');
@@ -1200,6 +1456,14 @@
         const uiResumeBtn = document.getElementById('resume-btn');
         const uiPauseToggleBtn = document.getElementById('pause-toggle-btn');
         const uiSaveExitBtn = document.getElementById('save-exit-btn');
+        const uiExplorationStage = document.getElementById('exploration-stage');
+        const uiSecretChest = document.getElementById('secret-chest');
+        const uiNavLeft = document.getElementById('nav-arrow-left');
+        const uiNavBack = document.getElementById('nav-arrow-back');
+        const uiNavForward = document.getElementById('nav-arrow-forward');
+        const uiLetterModal = document.getElementById('letter-modal');
+        const uiLetterMessage = document.getElementById('letter-message');
+        const uiLetterCloseBtn = document.getElementById('close-letter-btn');
 
         // Función para escribir el texto (fade-in progresivo)
         function typeWriter(htmlText, callback) {
@@ -1238,6 +1502,11 @@
 
             uiChoices.innerHTML = '';
             uiText.innerHTML = '';
+            explorationActive = false;
+            uiExplorationStage.classList.remove('active', 'lab', 'nexus');
+            uiLetterModal.classList.remove('active');
+            uiLetterModal.style.display = 'none';
+            uiDialogueBox.style.pointerEvents = '';
             uiBg.className = scene.bg;
             uiBg.style.backgroundImage = ''; // Limpia fondos inline (ej. cielo_roto.jpg) al cambiar de escena
             
@@ -1271,12 +1540,80 @@
                     const btn = document.createElement('div');
                     btn.className = 'choice-btn';
                     btn.innerText = choice.text;
-                    btn.onclick = () => loadScene(choice.next);
+                    btn.onclick = () => {
+                        if (choice.action === 'explore') {
+                            startExploration(choice.next != null ? choice.next : 1);
+                        } else {
+                            loadScene(choice.next);
+                        }
+                    };
                     uiChoices.appendChild(btn);
                     setTimeout(() => btn.style.display = 'block', 100);
                 });
             });
         }
+
+        // --- EXPLORACIÓN POINT & CLICK BIDIRECCIONAL ---
+        function startExploration(nextIndex) {
+            explorationActive = true;
+            explorationNextIndex = nextIndex != null ? nextIndex : 1;
+            isPaused = false;
+            uiChoices.innerHTML = '';
+            uiDialogueBox.style.opacity = '0';
+            uiDialogueBox.style.pointerEvents = 'none';
+            uiLetterModal.classList.remove('active');
+            uiLetterModal.style.display = 'none';
+            uiExplorationStage.classList.remove('lab', 'nexus');
+            uiExplorationStage.classList.add('active', 'nexus');
+            uiSecretChest.style.display = 'none';
+            uiBg.style.backgroundImage = '';
+            uiBg.className = 'bg-room';
+        }
+
+        function showLabRoom() {
+            if (!explorationActive) return;
+            uiBg.className = 'bg-lab';
+            uiExplorationStage.classList.remove('nexus');
+            uiExplorationStage.classList.add('lab');
+            uiSecretChest.style.display = 'block';
+        }
+
+        function showNexusRoom() {
+            if (!explorationActive) return;
+            uiBg.className = 'bg-room';
+            uiExplorationStage.classList.remove('lab');
+            uiExplorationStage.classList.add('nexus');
+            uiSecretChest.style.display = 'none';
+        }
+
+        function endExploration() {
+            if (!explorationActive) return;
+            explorationActive = false;
+            uiExplorationStage.classList.remove('active', 'lab', 'nexus');
+            uiSecretChest.style.display = 'none';
+            uiLetterModal.classList.remove('active');
+            uiLetterModal.style.display = 'none';
+            uiDialogueBox.style.pointerEvents = '';
+            loadScene(explorationNextIndex);
+        }
+
+        function closeSecretLetter() {
+            uiLetterModal.classList.remove('active');
+            uiLetterModal.style.display = 'none';
+        }
+
+        document.getElementById('secret-chest').addEventListener('click', function() {
+            document.getElementById('letter-message').textContent = '"Marely, realmente te quiero. Eres la única chica a la que le daría todo y haría cualquier cosa por verte feliz."';
+            document.getElementById('letter-modal').style.display = 'flex';
+            document.getElementById('letter-modal').classList.add('active');
+        });
+        uiNavLeft.addEventListener('click', showLabRoom);
+        uiNavBack.addEventListener('click', showNexusRoom);
+        uiNavForward.addEventListener('click', endExploration);
+        uiLetterCloseBtn.addEventListener('click', closeSecretLetter);
+        uiLetterModal.addEventListener('click', (e) => {
+            if (e.target === uiLetterModal) closeSecretLetter();
+        });
 
         // --- PRÓLOGO: CUTSCINE CINEMÁTICA ---
         const prologueLines = [
@@ -1439,6 +1776,7 @@
             currentScene = 0;
             isPaused = false;
             isTyping = false;
+            explorationActive = false;
             clearInterval(typeTimer);
 
             uiVnContainer.classList.remove('glitch-mode');
@@ -1449,6 +1787,10 @@
             uiFlashOverlay.style.opacity = '0';
             uiFlashOverlay.style.background = '#ffffff';
             uiDialogueBox.style.opacity = '1';
+            uiDialogueBox.style.pointerEvents = '';
+            uiExplorationStage.classList.remove('active', 'lab', 'nexus');
+            uiLetterModal.classList.remove('active');
+            uiLetterModal.style.display = 'none';
             uiChoices.innerHTML = '';
             uiText.innerHTML = '';
             uiSprite.classList.remove('show-sprite');
