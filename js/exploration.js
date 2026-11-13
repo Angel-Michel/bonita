@@ -93,6 +93,11 @@ function showGravityRoom() {
     uiBg.className = 'bg-gravity';
     uiExplorationStage.classList.remove('nexus', 'lab');
     uiExplorationStage.classList.add('gravity');
+
+    // Mostrar a Vegeta si está desbloqueado o es el compañero activo
+    const isVegetaUnlocked = unlockedCharacters.includes('VEGETA') || unlockedCharacters.includes('vegueta') || selectedCompanion === 'VEGETA';
+    uiExplorationStage.classList.toggle('has-vegeta', isVegetaUnlocked);
+
     updateArtifactsHud();
 }
 
@@ -161,6 +166,22 @@ const pickupSenzuBtn = document.getElementById('pickup-senzu');
 if (pickupSenzuBtn) {
     pickupSenzuBtn.addEventListener('click', () => {
         collectArtifact('senzu', 'Semilla del Ermitaño (Senzu)', 'Restaura al instante 80 HP y 50 Energía en plena batalla.');
+    });
+}
+
+// Diálogo con Vegeta en la Cámara de Gravedad tras desbloquearlo
+const npcVegetaBtn = document.getElementById('npc-vegeta');
+if (npcVegetaBtn) {
+    npcVegetaBtn.addEventListener('click', () => {
+        const dialogues = [
+            '👑 VEGETA: "¡Buen entrenamiento, MARELY! En esta cámara a 300G tu Ki se fortalece. ¡No permitas que ningún enemigo te tome por sorpresa!"',
+            '👑 VEGETA: "El Radar de Ki y el Cristal de Gravedad son artefactos útiles, pero tu verdadera fuerza proviene de tu determinación. ¡Sigue así!"',
+            '👑 VEGETA: "Siento perturbaciones dimensionales en otros universos... Saitama y Jason Todd podrían estar en peligro. ¡Debemos estar listos!"'
+        ];
+        const randomQuote = dialogues[Math.floor(Math.random() * dialogues.length)];
+        if (typeof showSystemToast === 'function') {
+            showSystemToast(randomQuote);
+        }
     });
 }
 

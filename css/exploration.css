@@ -227,6 +227,29 @@
 #exploration-stage.gravity #pickup-senzu { display: block; }
 #exploration-stage.gravity #nav-gravity-back { display: flex; }
 
+/* NPC Compañero (Vegeta en Cámara de Gravedad) */
+.npc-companion {
+    position: absolute;
+    right: 18%;
+    bottom: 12%;
+    width: 140px;
+    height: auto;
+    object-fit: contain;
+    z-index: 25;
+    cursor: pointer;
+    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.85));
+    transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.npc-companion:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 35px rgba(255, 215, 0, 1));
+}
+
+#exploration-stage.gravity.has-vegeta #npc-vegeta {
+    display: block !important;
+}
+
 /* Fondos */
 .bg-lab {
     background-image: url('../assets/images/habitacion.jpg');

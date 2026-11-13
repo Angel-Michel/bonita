@@ -186,18 +186,37 @@ const story = [
         bg: "bg-hero",
         text: "¡Lo lograste, MARELY! ¡Has liberado a Vegeta del abismo dimensional! Con su poder de combate de nuestro lado, el Nexo es mucho más seguro. Sin embargo, el radar multiversal sigue captando otras señales en peligro... Saitama, Jason Todd, Dick Grayson... El misterio apenas comienza.",
         choices: [
-            { text: "¿Quién será el siguiente en necesitar ayuda?", next: 21 },
-            { text: "Estamos listos para lo que venga.", next: 21 }
+            { text: "¿Vegeta, qué fue exactamente lo que te ocurrió allí?", next: 21 },
+            { text: "Estamos listos para investigar la fuente de la anomalía.", next: 21 }
+        ]
+    },
+    {
+        name: "Vegeta",
+        image: "assets/images/vegueta.gif",
+        bg: "bg-room",
+        text: "Escúchame bien, MARELY. La fuerza que me atrapó en ese páramo no fue un simple accidente. Alguien manipuló las frecuencias dimensionales a propósito para contener a los guerreros más formidables de cada universo. Si vamos a enfrentar a la entidad detrás de esto, necesitarás entrenar con gravedad aumentada.",
+        choices: [
+            { text: "Cuenta conmigo. No nos rendiremos ante nada.", next: 22 },
+            { text: "¡Será un honor entrenar con el Príncipe Saiyajin!", next: 22 }
+        ]
+    },
+    {
+        name: "Ángel (Admin)",
+        image: "assets/images/angel.png",
+        bg: "bg-lab",
+        text: "¡Fascinante! Al sincronizar los artefactos con el Ki de Vegeta, el Sistema Nexus registró una nueva habilidad pasiva: <strong>«Resonancia Saiyajin»</strong>. Ahora, cuando elijas a Vegeta en la pantalla de personajes, tendrás su respaldo de combate y acceso libre a las instalaciones de entrenamiento.",
+        choices: [
+            { text: "[ Sellar el pacto de guerreros y continuar ]", next: 23 }
         ]
     },
     {
         name: "Guardián del Nexo",
         image: "assets/images/angel.png",
         bg: "bg-room",
-        text: "La aventura del Nexo continuará desentrañando sus mayores secretos. Puedes volver al menú para seleccionar a Vegeta o guardar tu avance y retomar la misión en cualquier momento. ¡Bien hecho, MARELY!",
+        text: "El Nexo ha recuperado la estabilidad en este sector. Tu aventura puede continuar cuando lo desees: puedes guardar tu partida para conservar a Vegeta en tu equipo, explorar las salas o prepararte para la próxima señal multiversal. ¡Excelente trabajo, MARELY!",
         choices: [
             { text: "💾 Guardar partida y volver al Menú Principal", action: "saveAndTitle" },
-            { text: "[ Explorar los escenarios del Nexo libremente ]", action: "explore", next: 21 }
+            { text: "[ Explorar los escenarios del Nexo libremente ]", action: "explore", next: 23 }
         ]
     }
 ];
