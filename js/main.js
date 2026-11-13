@@ -1,0 +1,56 @@
+/* ==========================================================================
+   Application Bootstrap & Main Entry Point
+   ========================================================================== */
+
+// Botón regresar: volver a la pantalla de inicio (title screen)
+uiBackBtn.addEventListener('click', () => {
+    uiCharModal.classList.remove('active');
+    // Reactivar el botón de inicio del title screen
+    uiStartBtn.disabled = false;
+    uiStartBtn.style.animation = 'start-pulse 2.4s ease-in-out infinite';
+    // Reconstruir las tarjetas para que reanimen la entrada la próxima vez
+    setTimeout(() => {
+        uiCharGrid.innerHTML = '';
+        charsBuilt = false;
+    }, 800);
+});
+
+// Al hacer clic en iniciar: abrir el modal de selección de personaje
+uiStartBtn.addEventListener('click', () => {
+    uiStartBtn.disabled = true;
+    uiStartBtn.style.animation = 'none';
+    if (!charsBuilt) buildCharGrid();
+    uiCharModal.classList.add('active');
+});
+
+// Botón para continuar avance guardado
+const continueBtn = document.getElementById('continue-btn');
+if (continueBtn) {
+    continueBtn.addEventListener('click', () => {
+        loadSavedGame();
+    });
+}
+
+// Botones del modal de detalles de personaje desbloqueado
+const detailCloseBtn = document.getElementById('detail-close-btn');
+if (detailCloseBtn) {
+    detailCloseBtn.addEventListener('click', closeUnlockedCharacterDetails);
+}
+
+const detailSelectBtn = document.getElementById('detail-select-btn');
+if (detailSelectBtn) {
+    detailSelectBtn.addEventListener('click', () => {
+        const name = document.getElementById('detail-char-name').innerText;
+        selectUnlockedCompanion(name);
+    });
+}
+
+const detailModal = document.getElementById('char-detail-modal');
+if (detailModal) {
+    detailModal.addEventListener('click', (e) => {
+        if (e.target === detailModal) closeUnlockedCharacterDetails();
+    });
+}
+
+// Comprobar estado de guardado al iniciar la página
+checkSaveState();

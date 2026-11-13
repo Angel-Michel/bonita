@@ -1,0 +1,13 @@
+/* ==========================================================================
+   Main Stylesheet - Sistema Nexus
+   Organizado en módulos independientes sin dependencias externas
+   ========================================================================== */
+
+@import url('base.css');
+@import url('title.css');
+@import url('character-select.css');
+@import url('avatar-creator.css');
+@import url('visual-novel.css');
+@import url('pause-menu.css');
+@import url('exploration.css');
+@import url('modals.css');

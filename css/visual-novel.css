@@ -1,0 +1,143 @@
+/* ==========================================================================
+   Visual Novel UI (Dialogue Box, Sprites, Choices)
+   ========================================================================== */
+
+#vn-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 10;
+    padding-bottom: 5vh;
+}
+
+/* Sprite del Personaje (PNG transparente, estilo novela visual japonesa) */
+#character-sprite {
+    position: absolute;
+    right: 5%;
+    bottom: 0;
+    height: 75vh;
+    max-width: 50vw;
+    width: auto;
+    object-fit: contain;
+    object-position: bottom right;
+    transition: all 0.5s ease;
+    opacity: 1;
+    transform: translateY(20px);
+    filter: drop-shadow(0 0 15px rgba(0, 243, 255, 0.25));
+    z-index: 10;
+}
+
+.show-sprite {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+/* Caja de diálogo - ESTILO MANHWA / HOLOGRAMA */
+#dialogue-box {
+    position: absolute;
+    bottom: 5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 85%;
+    max-width: 900px;
+    z-index: 20;
+    box-sizing: border-box;
+    background: rgba(10, 15, 30, 0.7);
+    border: 2px solid #00f3ff;
+    border-radius: 8px;
+    padding: 30px 25px 20px 25px;
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.4), inset 0 0 15px rgba(0, 243, 255, 0.2);
+    backdrop-filter: blur(8px);
+    transition: opacity 0.5s ease;
+}
+
+/* Etiqueta del nombre (Estilo Rango/Sistema) */
+#name-tag {
+    position: absolute;
+    top: -18px;
+    left: 20px;
+    background: #00f3ff;
+    color: #000;
+    padding: 6px 20px;
+    border-radius: 4px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.6);
+    border: 1px solid #ffffff;
+}
+
+/* Texto que se escribe solo */
+#dialogue-text {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    min-height: 90px;
+    color: #e0f7fa;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Contenedor de botones de opciones */
+#choices-container {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-end;
+    min-height: 45px;
+}
+
+.choice-btn {
+    background: rgba(0, 243, 255, 0.1);
+    border: 1px solid #00f3ff;
+    color: #00f3ff;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: right;
+    display: none;
+    animation: fadeIn 0.5s ease forwards;
+    box-shadow: 0 0 5px rgba(0, 243, 255, 0.2);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(15px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.choice-btn:hover, .choice-btn:active {
+    background: #00f3ff;
+    color: #000;
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.8);
+    transform: translateX(-5px);
+}
+
+/* Glitch visual + temblor de pantalla (clase del contenedor principal) */
+#vn-container.glitch-mode {
+    animation: screen-shake 0.45s linear infinite;
+}
+
+@keyframes screen-shake {
+    0%, 100% { transform: translate(0, 0); filter: none; }
+    8% { transform: translate(-12px, 6px); filter: hue-rotate(90deg) saturate(2); }
+    16% { transform: translate(10px, -8px); filter: invert(0.08) contrast(1.3); }
+    24% { transform: translate(-8px, -6px); filter: hue-rotate(-60deg); }
+    32% { transform: translate(12px, 7px); filter: none; }
+    40% { transform: translate(-10px, 4px); filter: contrast(1.6) saturate(0.4); }
+    48% { transform: translate(9px, -5px); filter: hue-rotate(140deg); }
+    56% { transform: translate(-7px, 8px); filter: invert(0.06); }
+    64% { transform: translate(11px, -7px); filter: none; }
+    72% { transform: translate(-9px, 5px); filter: hue-rotate(-120deg) contrast(1.2); }
+    80% { transform: translate(8px, 6px); filter: invert(0.05); }
+    88% { transform: translate(-6px, -8px); filter: hue-rotate(60deg); }
+}

@@ -1,0 +1,402 @@
+/* ==========================================================================
+   Character Selection Modal & Unlocked Character Cards
+   ========================================================================== */
+
+#char-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 200;
+    background: rgba(3, 5, 12, 0.92);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5vh;
+    padding: 20px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+#char-modal.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+#char-modal.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 1.5s ease, visibility 1.5s ease;
+}
+
+#char-modal-title {
+    font-family: 'VT323', monospace;
+    font-size: clamp(1.8rem, 6vw, 3.5rem);
+    letter-spacing: 6px;
+    margin: 0;
+    color: #00f3ff;
+    text-align: center;
+    position: relative;
+    animation: title-glow 3s ease-in-out infinite;
+}
+
+#char-modal-title::before, #char-modal-title::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0;
+}
+
+#char-modal-title::before {
+    color: #ff5252;
+    clip-path: inset(0 0 55% 0);
+    animation: glitch-a 4s infinite steps(1);
+}
+
+#char-modal-title::after {
+    color: #4fc3f7;
+    clip-path: inset(60% 0 0 0);
+    animation: glitch-b 4s infinite steps(1);
+}
+
+/* Botón regresar (esquina superior izquierda) */
+#back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-family: 'VT323', monospace;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    background: rgba(0, 243, 255, 0.06);
+    border: 1px solid rgba(0, 243, 255, 0.5);
+    color: #00f3ff;
+    padding: 10px 22px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-shadow: 0 0 8px rgba(0, 243, 255, 0.7);
+    transition: all 0.25s ease;
+    z-index: 5;
+}
+
+#back-btn:hover, #back-btn:active {
+    background: #00f3ff;
+    color: #000;
+    text-shadow: none;
+    box-shadow: 0 0 18px rgba(0, 243, 255, 0.8);
+    transform: translateX(-3px);
+}
+
+/* Cuadrícula de tarjetas */
+#char-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    width: 100%;
+    max-width: 820px;
+    gap: 22px;
+    transition: opacity 0.4s ease, filter 0.4s ease;
+}
+
+.char-card {
+    position: relative;
+    background: rgba(0, 243, 255, 0.05);
+    border: 2px solid rgba(0, 243, 255, 0.5);
+    border-radius: 10px;
+    padding: 12px;
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+    animation: card-in 0.5s ease backwards;
+}
+
+@keyframes card-in {
+    from { opacity: 0; transform: translateY(25px) scale(0.9); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Estilo para personajes desbloqueados (como Vegeta) */
+.char-card.unlocked {
+    border-color: #ffd700;
+    background: rgba(255, 215, 0, 0.08);
+    box-shadow: 0 0 18px rgba(255, 215, 0, 0.4), inset 0 0 10px rgba(255, 215, 0, 0.15);
+}
+
+.char-card.unlocked:hover, .char-card.unlocked:active {
+    transform: scale(1.1) translateY(-6px);
+    border-color: #ffffff;
+    background: rgba(255, 215, 0, 0.2);
+    box-shadow: 0 0 35px rgba(255, 215, 0, 0.9), inset 0 0 15px rgba(255, 215, 0, 0.4);
+}
+
+.char-lock.unlocked {
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.9));
+    animation: star-pulse 2s ease-in-out infinite;
+}
+
+@keyframes star-pulse {
+    0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.85; }
+    50% { transform: scale(1.25) rotate(15deg); opacity: 1; filter: drop-shadow(0 0 14px #ffd700); }
+}
+
+.unlocked-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: #ffd700;
+    color: #000000;
+    font-family: 'VT323', monospace;
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
+    z-index: 2;
+}
+
+/* Flotación suave y continua de los personajes */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.char-card img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 6px;
+    display: block;
+    filter: saturate(0.8) contrast(1.05);
+    transition: filter 0.25s ease;
+    animation: float 3.5s ease-in-out infinite;
+}
+
+.char-card .char-name {
+    margin-top: 10px;
+    font-family: 'VT323', monospace;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    color: #e0f7fa;
+}
+
+/* Candado superpuesto (personaje bloqueado) */
+.char-lock {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-size: 1.5rem;
+    z-index: 2;
+    pointer-events: none;
+    filter: drop-shadow(0 0 8px rgba(255, 23, 68, 0.8));
+    animation: lock-pulse 3s ease-in-out infinite;
+}
+
+@keyframes lock-pulse {
+    0%, 100% { opacity: 0.75; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.12); }
+}
+
+.char-card:hover, .char-card:active {
+    transform: scale(1.08) translateY(-4px);
+    border-color: #00f3ff;
+    background: rgba(0, 243, 255, 0.15);
+    box-shadow: 0 0 25px rgba(0, 243, 255, 0.7), inset 0 0 12px rgba(0, 243, 255, 0.3);
+    z-index: 2;
+}
+
+.char-card:hover img, .char-card:active img {
+    filter: saturate(1.3);
+}
+
+.char-card.selected {
+    border-color: #ff1744;
+    box-shadow: 0 0 25px rgba(255, 23, 68, 0.7), inset 0 0 12px rgba(255, 23, 68, 0.3);
+}
+
+/* Botón dorado para crear protagonista */
+#create-btn {
+    font-family: 'VT323', monospace;
+    font-size: clamp(1.2rem, 3.5vw, 1.7rem);
+    letter-spacing: 3px;
+    background: rgba(255, 215, 0, 0.08);
+    border: 2px solid #ffd700;
+    color: #ffd700;
+    padding: 16px 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+    animation: create-pulse 2s ease-in-out infinite;
+    transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    width: 90%;
+    max-width: 820px;
+}
+
+@keyframes create-pulse {
+    0%, 100% {
+        box-shadow: 0 0 12px rgba(255, 215, 0, 0.35), inset 0 0 8px rgba(255, 215, 0, 0.12);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 35px rgba(255, 215, 0, 0.85), inset 0 0 18px rgba(255, 215, 0, 0.3);
+        transform: scale(1.03);
+    }
+}
+
+#create-btn:hover, #create-btn:active {
+    background: #ffd700;
+    color: #000;
+    text-shadow: none;
+    transform: scale(1.04);
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.9);
+}
+
+/* --- MODAL DE DETALLE DE PERSONAJE DESBLOQUEADO --- */
+#char-detail-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(2, 2, 10, 0.88);
+    backdrop-filter: blur(10px);
+}
+
+#char-detail-modal.active {
+    display: flex;
+}
+
+.char-detail-paper {
+    width: 100%;
+    max-width: 550px;
+    padding: 30px;
+    box-sizing: border-box;
+    border: 2px solid #ffd700;
+    border-radius: 12px;
+    background: radial-gradient(circle at 50% 0%, rgba(255, 215, 0, 0.15) 0%, transparent 70%),
+                linear-gradient(160deg, rgba(16, 10, 32, 0.97) 0%, rgba(4, 6, 20, 0.97) 100%);
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.4), inset 0 0 25px rgba(255, 215, 0, 0.1);
+    text-align: center;
+    animation: card-in 0.4s ease;
+}
+
+.detail-header {
+    margin-bottom: 20px;
+}
+
+.detail-badge {
+    font-family: 'VT323', monospace;
+    font-size: 1.15rem;
+    color: #ffd700;
+    letter-spacing: 2px;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
+    display: inline-block;
+    margin-bottom: 8px;
+}
+
+#detail-char-name {
+    font-family: 'VT323', monospace;
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    letter-spacing: 4px;
+    margin: 0;
+    color: #ffffff;
+    text-shadow: 0 0 12px rgba(255, 215, 0, 0.8);
+}
+
+.detail-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.detail-img-container {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 3px solid #ffd700;
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.detail-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.detail-desc {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #e0f7fa;
+    text-align: left;
+    background: rgba(0, 243, 255, 0.05);
+    border: 1px solid rgba(0, 243, 255, 0.3);
+    border-radius: 8px;
+    padding: 14px 18px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.detail-desc strong {
+    color: #ffd700;
+}
+
+.detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+}
+
+.detail-btn {
+    font-family: 'VT323', monospace;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.detail-btn.close {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+}
+
+.detail-btn.close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.detail-btn.select {
+    background: rgba(255, 215, 0, 0.15);
+    border: 2px solid #ffd700;
+    color: #ffd700;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+}
+
+.detail-btn.select:hover {
+    background: #ffd700;
+    color: #000000;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.9);
+    transform: scale(1.04);
+}
