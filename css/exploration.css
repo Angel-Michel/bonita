@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Point & Click Exploration Stage
+   Point & Click Exploration Stage (Multi-Scenario Map & Artifacts)
    ========================================================================== */
 
 #exploration-stage {
@@ -18,7 +18,108 @@
     pointer-events: auto;
 }
 
-/* Cofre secreto (solo en el Laboratorio) */
+/* --- HUD SUPERIOR: INVENTARIO DE ARTEFACTOS --- */
+#artifacts-hud {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(8, 12, 28, 0.88);
+    border: 2px solid #00f3ff;
+    border-radius: 10px;
+    padding: 10px 22px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 120;
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.35);
+    backdrop-filter: blur(8px);
+    pointer-events: auto;
+}
+
+.hud-title {
+    font-family: 'VT323', monospace;
+    font-size: 1.25rem;
+    letter-spacing: 2px;
+    color: #ffd700;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.7);
+}
+
+.hud-items-row {
+    display: flex;
+    gap: 12px;
+}
+
+.hud-item-slot {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'VT323', monospace;
+    font-size: 1.1rem;
+    color: #888888;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px dashed rgba(255, 255, 255, 0.25);
+    padding: 4px 10px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.hud-item-slot img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    filter: grayscale(1) opacity(0.4);
+    transition: all 0.3s ease;
+}
+
+.hud-item-slot.collected {
+    color: #00f3ff;
+    border: 1px solid #00f3ff;
+    background: rgba(0, 243, 255, 0.12);
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.4);
+}
+
+.hud-item-slot.collected img {
+    filter: grayscale(0) opacity(1) drop-shadow(0 0 5px #00f3ff);
+}
+
+/* --- OBJETOS INTERACTIVOS EN EL ESCENARIO --- */
+.pickup-item {
+    position: absolute;
+    width: 85px;
+    height: 85px;
+    object-fit: contain;
+    z-index: 100;
+    display: none;
+    cursor: pointer;
+    pointer-events: auto;
+    filter: drop-shadow(0 0 16px rgba(0, 243, 255, 0.8));
+    animation: chest-float 3s ease-in-out infinite;
+    transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.pickup-item:hover, .pickup-item:active {
+    transform: scale(1.18);
+    filter: drop-shadow(0 0 25px rgba(255, 215, 0, 1));
+}
+
+/* Ubicación de los ítems */
+#pickup-radar {
+    left: 70%;
+    bottom: 30%;
+}
+
+#pickup-crystal {
+    left: 20%;
+    bottom: 35%;
+}
+
+#pickup-senzu {
+    right: 22%;
+    bottom: 38%;
+}
+
+/* Cofre secreto (en el Laboratorio) */
 #secret-chest {
     position: absolute;
     left: 8%;
@@ -45,12 +146,9 @@
     50% { transform: translateY(-12px); }
 }
 
-/* Navegación entre habitaciones */
-#nav-arrow-left,
-#nav-arrow-back,
-#nav-arrow-forward {
+/* --- BOTONES DE NAVEGACIÓN ENTRE HABITACIONES --- */
+.nav-room-btn {
     position: absolute;
-    bottom: 50%;
     z-index: 100;
     display: none;
     align-items: center;
@@ -71,30 +169,65 @@
     white-space: nowrap;
 }
 
-#nav-arrow-left { left: 5%; bottom: 40%; }
-#nav-arrow-forward { left: 8%; bottom: 15%; }
-#nav-arrow-back { right: 5%; top: 20%; bottom: auto; }
-
-#nav-arrow-left:hover, #nav-arrow-left:active,
-#nav-arrow-forward:hover, #nav-arrow-forward:active,
-#nav-arrow-back:hover, #nav-arrow-back:active {
+.nav-room-btn:hover, .nav-room-btn:active {
     background: #00f3ff;
     color: #000;
     text-shadow: none;
     box-shadow: 0 0 30px rgba(0, 243, 255, 0.9);
 }
 
-#nav-arrow-left:hover, #nav-arrow-left:active { transform: translateX(-4px); }
-#nav-arrow-forward:hover, #nav-arrow-forward:active { transform: translateX(4px); }
-#nav-arrow-back:hover, #nav-arrow-back:active { transform: translateX(4px); }
+/* Posiciones de navegación */
+#nav-to-lab { left: 4%; bottom: 45%; }
+#nav-to-gravity { right: 4%; bottom: 45%; }
 
-/* Visibilidad según la habitación */
+#nav-arrow-back { right: 5%; top: 20%; bottom: auto; }
+#nav-gravity-back { left: 5%; top: 20%; bottom: auto; }
+
+/* Portal central a la Arena de Vegeta */
+#nav-to-portal {
+    left: 50%;
+    bottom: 12%;
+    transform: translateX(-50%);
+    border-color: #ffd700;
+    color: #ffd700;
+    background: rgba(255, 215, 0, 0.1);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
+    letter-spacing: 3px;
+    animation: portal-pulse 2.5s ease-in-out infinite;
+}
+
+#nav-to-portal:hover {
+    background: #ffd700;
+    color: #000;
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.95);
+    transform: translateX(-50%) scale(1.04);
+}
+
+@keyframes portal-pulse {
+    0%, 100% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
+    50% { box-shadow: 0 0 35px rgba(255, 215, 0, 0.9); }
+}
+
+#nav-arrow-forward { left: 8%; bottom: 15%; }
+
+/* --- VISIBILIDAD POR HABITACIÓN --- */
+/* Cámara Nexus */
+#exploration-stage.nexus #nav-to-lab { display: flex; }
+#exploration-stage.nexus #nav-to-gravity { display: flex; }
+#exploration-stage.nexus #nav-to-portal { display: flex; }
+
+/* Laboratorio */
 #exploration-stage.lab #secret-chest { display: block; }
-#exploration-stage.nexus #nav-arrow-left { display: flex; }
+#exploration-stage.lab #pickup-radar { display: block; }
 #exploration-stage.lab #nav-arrow-back { display: flex; }
-#exploration-stage.lab #nav-arrow-forward { display: flex; }
 
-/* Fondo del laboratorio */
+/* Cámara de Gravedad */
+#exploration-stage.gravity #pickup-crystal { display: block; }
+#exploration-stage.gravity #pickup-senzu { display: block; }
+#exploration-stage.gravity #nav-gravity-back { display: flex; }
+
+/* Fondos */
 .bg-lab {
     background-image: url('../assets/images/habitacion.jpg');
     background-size: cover;

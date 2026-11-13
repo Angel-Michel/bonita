@@ -19,7 +19,7 @@ function showSystemToast(message) {
     uiLockOverlay.classList.add('show', 'save-mode');
     toastTimer = setTimeout(() => {
         uiLockOverlay.classList.remove('show', 'save-mode');
-    }, 1600);
+    }, 1800);
 }
 
 function saveGameState() {
@@ -32,11 +32,13 @@ function saveGameState() {
         prologueActive: prologueActive,
         selectedCompanion: selectedCompanion,
         unlockedCharacters: unlockedCharacters,
+        collectedArtifacts: collectedArtifacts,
         savedAt: new Date().toISOString()
     };
     try {
         localStorage.setItem('nexusSave', JSON.stringify(saveData));
         localStorage.setItem('nexusUnlockedChars', JSON.stringify(unlockedCharacters));
+        localStorage.setItem('nexusArtifacts', JSON.stringify(collectedArtifacts));
         checkSaveState();
     } catch (e) {
         console.warn("Error al guardar partida:", e);
@@ -48,7 +50,7 @@ function saveAndExit() {
     saveGameState();
     closePauseMenu();
     isPaused = false;
-    showSystemToast('💾 AVANCE Y DESBLOQUEOS GUARDADOS EN EL SISTEMA NEXUS');
+    showSystemToast('💾 AVANCE, ARTEFACTOS Y DESBLOQUEOS GUARDADOS EN EL SISTEMA NEXUS');
     setTimeout(resetToTitle, 1600);
 }
 
@@ -65,6 +67,10 @@ function loadSavedGame() {
 
         if (Array.isArray(saveData.unlockedCharacters)) {
             unlockedCharacters = saveData.unlockedCharacters;
+        }
+
+        if (Array.isArray(saveData.collectedArtifacts)) {
+            collectedArtifacts = saveData.collectedArtifacts;
         }
 
         uiTitleScreen.classList.add('fade-out');
@@ -120,6 +126,11 @@ function resetToTitle() {
     explorationActive = false;
     clearInterval(typeTimer);
 
+    // Cerrar combate si estaba activo
+    const battleStage = document.getElementById('battle-stage');
+    if (battleStage) battleStage.classList.remove('active');
+    battleActive = false;
+
     uiVnContainer.classList.remove('glitch-mode');
     uiBg.classList.remove('bg-dark-flicker');
     uiBg.style.backgroundImage = '';
@@ -129,7 +140,7 @@ function resetToTitle() {
     uiFlashOverlay.style.background = '#ffffff';
     uiDialogueBox.style.opacity = '1';
     uiDialogueBox.style.pointerEvents = '';
-    uiExplorationStage.classList.remove('active', 'lab', 'nexus');
+    uiExplorationStage.classList.remove('active', 'lab', 'nexus', 'gravity');
     uiLetterModal.classList.remove('active');
     uiLetterModal.style.display = 'none';
     uiChoices.innerHTML = '';

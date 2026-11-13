@@ -52,5 +52,31 @@ if (detailModal) {
     });
 }
 
+// Botones de acción del sistema de combate contra Vegeta
+const btnAttack = document.getElementById('battle-btn-attack');
+if (btnAttack) {
+    btnAttack.addEventListener('click', playerAttack);
+}
+
+const btnRadar = document.getElementById('battle-btn-radar');
+if (btnRadar) {
+    btnRadar.addEventListener('click', playerUseRadar);
+}
+
+const btnCrystal = document.getElementById('battle-btn-crystal');
+if (btnCrystal) {
+    btnCrystal.addEventListener('click', playerUseCrystal);
+}
+
+const btnSenzu = document.getElementById('battle-btn-senzu');
+if (btnSenzu) {
+    btnSenzu.addEventListener('click', playerUseSenzu);
+}
+
+const btnPride = document.getElementById('battle-btn-pride');
+if (btnPride) {
+    btnPride.addEventListener('click', playerAppealPride);
+}
+
 // Comprobar estado de guardado al iniciar la página
 checkSaveState();

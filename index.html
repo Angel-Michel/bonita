@@ -141,15 +141,108 @@
         </div>
     </div>
 
-    <!-- FASE DE EXPLORACIÓN POINT & CLICK BIDIRECCIONAL -->
+    <!-- FASE DE EXPLORACIÓN MULTIESCENARIO (POINT & CLICK) -->
     <div id="exploration-stage">
-        <!-- Cámara Nexus -->
-        <img src="assets/images/cofre.png" id="secret-chest" alt="Cofre secreto" title="Inspeccionar cofre">
-        <button id="nav-arrow-left" aria-label="Investigar laboratorio">❮ [ Investigar Laboratorio ]</button>
+        <!-- HUD de Artefactos de la Fisura -->
+        <div id="artifacts-hud">
+            <span class="hud-title">ARTEFACTOS DE LA FISURA:</span>
+            <div class="hud-items-row">
+                <div id="slot-radar" class="hud-item-slot" title="Radar Dimensional de Ki">
+                    <img src="assets/images/radar_ki.svg" alt="Radar">
+                    <span>Radar de Ki</span>
+                </div>
+                <div id="slot-crystal" class="hud-item-slot" title="Cristal de Gravedad">
+                    <img src="assets/images/cristal_gravedad.svg" alt="Cristal">
+                    <span>Cristal de Gravedad</span>
+                </div>
+                <div id="slot-senzu" class="hud-item-slot" title="Semilla del Ermitaño (Senzu)">
+                    <img src="assets/images/semilla_senzu.svg" alt="Semilla">
+                    <span>Semilla Senzu</span>
+                </div>
+            </div>
+            <span id="hud-counter" class="hud-title">(0/3)</span>
+        </div>
 
-        <!-- Laboratorio -->
-        <button id="nav-arrow-back" aria-label="Regresar a la cámara">[ Regresar a la Cámara ] ❯</button>
-        <button id="nav-arrow-forward" aria-label="Avanzar al encuentro">[ Avanzar ]</button>
+        <!-- Elementos del Laboratorio -->
+        <img src="assets/images/cofre.png" id="secret-chest" alt="Cofre secreto" title="Inspeccionar cofre">
+        <img src="assets/images/radar_ki.svg" id="pickup-radar" class="pickup-item" alt="Radar de Ki" title="Recoger Radar Dimensional de Ki">
+
+        <!-- Elementos de la Cámara de Gravedad -->
+        <img src="assets/images/cristal_gravedad.svg" id="pickup-crystal" class="pickup-item" alt="Cristal de Gravedad" title="Recoger Cristal de Gravedad">
+        <img src="assets/images/semilla_senzu.svg" id="pickup-senzu" class="pickup-item" alt="Semilla Senzu" title="Recoger Semilla del Ermitaño">
+
+        <!-- Botones de Navegación entre Salas -->
+        <!-- Desde Cámara Nexus: -->
+        <button id="nav-to-lab" class="nav-room-btn" aria-label="Ir al Laboratorio">❮ [ Laboratorio ]</button>
+        <button id="nav-to-gravity" class="nav-room-btn" aria-label="Ir a Cámara de Gravedad">[ Cámara de Gravedad ] ❯</button>
+        <button id="nav-to-portal" class="nav-room-btn" aria-label="Entrar a la Arena de Vegeta">🔒 [ PORTAL BLOQUEADO (0/3 Artefactos) ]</button>
+
+        <!-- Desde Laboratorio hacia Nexus: -->
+        <button id="nav-arrow-back" class="nav-room-btn" aria-label="Regresar a la cámara">[ Regresar a la Cámara ] ❯</button>
+
+        <!-- Desde Cámara de Gravedad hacia Nexus: -->
+        <button id="nav-gravity-back" class="nav-room-btn" aria-label="Regresar al Nexo">❮ [ Regresar a la Cámara ]</button>
+    </div>
+
+    <!-- FASE DE COMBATE CONTRA VEGETA (BOSS BATTLE) -->
+    <div id="battle-stage">
+        <!-- HUD Superior: Estado del Boss (Vegeta) -->
+        <div class="battle-boss-hud">
+            <div class="boss-avatar-frame">
+                <img src="assets/images/vegueta.gif" alt="Vegeta">
+            </div>
+            <div class="boss-info">
+                <div class="boss-header">
+                    <h3 class="boss-name">VEGETA [ CORRUPCIÓN MULTIVERSAL ]</h3>
+                    <span class="boss-title">★ PRÍNCIPE DE LOS SAIYAJIN ★</span>
+                </div>
+                <div class="stat-bar-container">
+                    <div id="boss-hp-fill" class="stat-bar-fill boss-hp" style="width: 100%;"></div>
+                    <span id="boss-hp-text" class="stat-bar-text">300 / 300 HP</span>
+                </div>
+                <div class="stat-bar-container" style="height: 12px;">
+                    <div id="boss-ki-fill" class="stat-bar-fill boss-ki" style="width: 50%;"></div>
+                    <span id="boss-ki-text" class="stat-bar-text" style="font-size: 0.85rem;">Ki: 50%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Arena Central: Sprite de Vegeta -->
+        <div class="battle-arena">
+            <img id="boss-sprite" class="battle-boss-sprite" src="assets/images/vegueta.gif" alt="Vegeta en Batalla">
+        </div>
+
+        <!-- HUD Inferior: Registro de Batalla y Acciones de Marely -->
+        <div class="battle-lower-hud">
+            <div id="battle-log">
+                <!-- Mensajes dinámicos de batalla -->
+                ⚔ <strong>¡ARENA DEL UNIVERSO 7 ACTIVADA!</strong> Prepárate para el combate contra Vegeta.
+            </div>
+
+            <div class="battle-controls-row">
+                <!-- Estado de la Protagonista -->
+                <div class="battle-player-hud">
+                    <div class="player-name-tag">PROTAGONISTA: MARELY</div>
+                    <div class="stat-bar-container" style="height: 16px; margin-bottom: 6px;">
+                        <div id="player-hp-fill" class="stat-bar-fill player-hp" style="width: 100%;"></div>
+                        <span id="player-hp-text" class="stat-bar-text">120 / 120 HP</span>
+                    </div>
+                    <div class="stat-bar-container" style="height: 12px;">
+                        <div id="player-energy-fill" class="stat-bar-fill player-energy" style="width: 100%;"></div>
+                        <span id="player-energy-text" class="stat-bar-text" style="font-size: 0.85rem;">Energía: 100%</span>
+                    </div>
+                </div>
+
+                <!-- Grilla de Acciones de Combate -->
+                <div class="battle-actions-grid">
+                    <button id="battle-btn-attack" class="battle-btn">⚔ Ataque de Resonancia (15 EN)</button>
+                    <button id="battle-btn-radar" class="battle-btn">📡 Radar de Ki: Esquivar y Contraataque</button>
+                    <button id="battle-btn-crystal" class="battle-btn">🌀 Cristal de Gravedad: Aturdir Ki</button>
+                    <button id="battle-btn-senzu" class="battle-btn">🌱 Semilla Senzu: Restaurar Salud</button>
+                    <button id="battle-btn-pride" class="battle-btn pride-btn" style="display: none;">👑 ¡Apelar al Orgullo Saiyajin!</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- MODAL: CAJA DE SUMINISTROS -->
@@ -180,6 +273,7 @@
     <script src="js/data/story.data.js"></script>
     <script src="js/state.js"></script>
     <script src="js/ui.js"></script>
+    <script src="js/battle.js"></script>
     <script src="js/visual-novel.js"></script>
     <script src="js/prologue.js"></script>
     <script src="js/exploration.js"></script>

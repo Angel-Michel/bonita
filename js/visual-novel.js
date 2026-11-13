@@ -14,7 +14,7 @@ function loadScene(index) {
     uiChoices.innerHTML = '';
     uiText.innerHTML = '';
     explorationActive = false;
-    uiExplorationStage.classList.remove('active', 'lab', 'nexus');
+    uiExplorationStage.classList.remove('active', 'lab', 'nexus', 'gravity');
     uiLetterModal.classList.remove('active');
     uiLetterModal.style.display = 'none';
     uiDialogueBox.style.pointerEvents = '';
@@ -60,6 +60,10 @@ function loadScene(index) {
             btn.onclick = () => {
                 if (choice.action === 'explore') {
                     startExploration(choice.next != null ? choice.next : 1);
+                } else if (choice.action === 'startBattle') {
+                    if (typeof startVegetaBattle === 'function') {
+                        startVegetaBattle();
+                    }
                 } else if (choice.action === 'unlockVegeta') {
                     if (typeof unlockCharacter === 'function') {
                         unlockCharacter('VEGETA');

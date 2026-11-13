@@ -78,18 +78,20 @@ const story = [
         name: "Guardián del Nexo",
         image: "assets/images/angel.png",
         bg: "bg-room",
-        text: "La fisura que te trajo al Nexo abrió grietas en otras realidades. Si esa anomalía devora el poder de Vegeta, el Nexo entero colapsará. MARELY, debes cruzar el umbral dimensional y resolver el sello ancestral con tu {{ITEM}}.",
+        text: "La fisura que te trajo al Nexo abrió grietas en otras realidades. Si esa anomalía devora el poder de Vegeta, el Nexo colapsará. Pero cuidado: su Ki corrompido es devastador. Debes explorar las salas del Nexo y reunir los 3 Artefactos de Batalla (Radar de Ki, Cristal de Gravedad y Semilla Senzu) para poder desafiarlo y liberarlo en combate.",
         choices: [
-            { text: "[ Cruzar la Fisura Dimensional hacia el Sector 7-Z ]", next: 10 }
+            { text: "[ Explorar los Escenarios del Nexo y reunir los Artefactos ]", action: "explore", next: 10 },
+            { text: "⚔ [ Entrar a la Arena de Batalla contra Vegeta ] ⚔", action: "startBattle" }
         ]
     },
     {
         name: "Sistema",
         image: null,
         bg: "bg-hero",
-        text: "<span class='system-text'>Iniciando salto dimensional hacia el epicentro de la tormenta... Coordenadas fijadas: Núcleo de la Anomalía. Resonancia detectada con tu objeto inicial: {{ITEM}}.</span>",
+        text: "<span class='system-text'>Los sensores dimensionales han fijado las coordenadas de la Arena del Universo 7. Puedes explorar las salas para recoger los artefactos necesarios o iniciar el combate cuando estés lista.</span>",
         choices: [
-            { text: "[ Entrar en el vórtice de Ki ]", next: 11 }
+            { text: "⚔ [ Desafiar a Vegeta en Combate ] ⚔", action: "startBattle" },
+            { text: "[ Seguir buscando artefactos en los escenarios ]", action: "explore", next: 10 }
         ]
     },
     {
@@ -195,7 +197,7 @@ const story = [
         text: "La aventura del Nexo continuará desentrañando sus mayores secretos. Puedes volver al menú para seleccionar a Vegeta o guardar tu avance y retomar la misión en cualquier momento. ¡Bien hecho, MARELY!",
         choices: [
             { text: "💾 Guardar partida y volver al Menú Principal", action: "saveAndTitle" },
-            { text: "[ Explorar la cámara una vez más ]", action: "explore", next: 21 }
+            { text: "[ Explorar los escenarios del Nexo libremente ]", action: "explore", next: 21 }
         ]
     }
 ];

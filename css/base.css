@@ -42,6 +42,18 @@ body, html {
     background-position: center;
     background-repeat: no-repeat;
 }
+.bg-gravity {
+    background-image: url('../assets/images/camara_gravedad.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.bg-wasteland {
+    background-image: url('../assets/images/paramo_rocoso.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
 
 /* Efecto de estática (Misterio/Gotham) */
 #fx-overlay {
