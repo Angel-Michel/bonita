@@ -107,6 +107,9 @@ function selectUnlockedCompanion(name) {
     if (typeof showSystemToast === 'function') {
         showSystemToast(`⚔ ¡${name} seleccionado como Aliado Multiversal!`);
     }
+    if (name === 'VEGETA' && typeof unlockAchievement === 'function') {
+        unlockAchievement('saiyan_alliance');
+    }
     // Cerrar selección y comenzar aventura o prólogo
     uiCharModal.classList.remove('active');
     uiTitleScreen.classList.add('fade-out');

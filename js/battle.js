@@ -238,6 +238,10 @@ function endBattleVictory() {
         unlockCharacter('VEGETA');
     }
 
+    if (typeof unlockAchievement === 'function') {
+        unlockAchievement('pride_restored');
+    }
+
     // Regresar al flujo de novela visual en la escena de victoria
     uiDialogueBox.style.opacity = '1';
     uiDialogueBox.style.pointerEvents = '';

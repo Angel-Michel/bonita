@@ -33,12 +33,14 @@ function saveGameState() {
         selectedCompanion: selectedCompanion,
         unlockedCharacters: unlockedCharacters,
         collectedArtifacts: collectedArtifacts,
+        unlockedAchievements: unlockedAchievements,
         savedAt: new Date().toISOString()
     };
     try {
         localStorage.setItem('nexusSave', JSON.stringify(saveData));
         localStorage.setItem('nexusUnlockedChars', JSON.stringify(unlockedCharacters));
         localStorage.setItem('nexusArtifacts', JSON.stringify(collectedArtifacts));
+        localStorage.setItem('nexusAchievements', JSON.stringify(unlockedAchievements));
         checkSaveState();
     } catch (e) {
         console.warn("Error al guardar partida:", e);
@@ -71,6 +73,10 @@ function loadSavedGame() {
 
         if (Array.isArray(saveData.collectedArtifacts)) {
             collectedArtifacts = saveData.collectedArtifacts;
+        }
+
+        if (Array.isArray(saveData.unlockedAchievements)) {
+            unlockedAchievements = saveData.unlockedAchievements;
         }
 
         uiTitleScreen.classList.add('fade-out');

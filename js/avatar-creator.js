@@ -59,6 +59,10 @@ uiLinkBtn.addEventListener('click', () => {
     if (outfitSelected) playerOutfit = outfitSelected.dataset.value;
     if (itemSelected) playerItem = itemSelected.dataset.value;
 
+    if (typeof unlockAchievement === 'function') {
+        unlockAchievement('awakening');
+    }
+
     uiLinkBtn.disabled = true;
     uiLinkBtn.style.animation = 'none';
     uiCreatorModal.classList.add('fade-out');

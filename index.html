@@ -118,6 +118,7 @@
             <div class="pause-status" id="pause-status">SISTEMA EN PAUSA</div>
             <button class="pause-option" id="resume-btn">▶ Reanudar</button>
             <button class="pause-option" id="pause-toggle-btn">❚❚ Pausar / Opciones</button>
+            <button class="pause-option" id="pause-terminal-btn" style="border-color: #00f3ff; color: #00f3ff;">💻 Terminal & Códice</button>
             <button class="pause-option save" id="save-exit-btn">💾 Guardar Avance y Salir</button>
         </div>
     </div>
@@ -177,6 +178,13 @@
         <button id="nav-to-lab" class="nav-room-btn" aria-label="Ir al Laboratorio">❮ [ Laboratorio ]</button>
         <button id="nav-to-gravity" class="nav-room-btn" aria-label="Ir a Cámara de Gravedad">[ Cámara de Gravedad ] ❯</button>
         <button id="nav-to-portal" class="nav-room-btn" aria-label="Entrar a la Arena de Vegeta">🔒 [ PORTAL BLOQUEADO (0/3 Artefactos) ]</button>
+
+        <!-- Terminal Holográfica Nexus (en Cámara Nexus) -->
+        <div id="nexus-terminal-btn" class="holo-terminal-trigger" title="Abrir Terminal Multiversal y Códice">
+            <div class="holo-beacon-ring"></div>
+            <div class="holo-beacon-icon">💻</div>
+            <span class="holo-beacon-label">TERMINAL MULTIVERSAL</span>
+        </div>
 
         <!-- Desde Laboratorio hacia Nexus: -->
         <button id="nav-arrow-back" class="nav-room-btn" aria-label="Regresar a la cámara">[ Regresar a la Cámara ] ❯</button>
@@ -268,8 +276,56 @@
         </div>
     </div>
 
+    <!-- MODAL: TERMINAL MULTIVERSAL Y CÓDICE NEXUS -->
+    <div id="terminal-modal" class="terminal-overlay">
+        <div class="terminal-window">
+            <div class="terminal-titlebar">
+                <div class="terminal-title">
+                    <span class="terminal-icon">⚡</span>
+                    <span>SISTEMA NEXUS v2.5 // TERMINAL DE MISIONES & CÓDICE</span>
+                </div>
+                <button id="terminal-close-btn" class="terminal-close" aria-label="Cerrar Terminal">✕</button>
+            </div>
+
+            <div class="terminal-tabs">
+                <button class="terminal-tab active" data-tab="missions">📡 Misiones Multiversales</button>
+                <button class="terminal-tab" data-tab="codex">📖 Códice de Archivos</button>
+                <button class="terminal-tab" data-tab="achievements">🏆 Sala de Logros (<span id="achievements-count">0/8</span>)</button>
+            </div>
+
+            <div class="terminal-body">
+                <!-- PESTAÑA: MISIONES -->
+                <div id="tab-missions" class="terminal-pane active">
+                    <div id="missions-list" class="missions-grid"></div>
+                </div>
+
+                <!-- PESTAÑA: CÓDICE -->
+                <div id="tab-codex" class="terminal-pane">
+                    <div id="codex-list" class="codex-grid"></div>
+                </div>
+
+                <!-- PESTAÑA: LOGROS -->
+                <div id="tab-achievements" class="terminal-pane">
+                    <div class="achievements-summary-bar">
+                        <span id="achievements-summary-text" style="color: #ffd700; font-weight: bold; font-family: 'Courier New', monospace;">LOGROS COMPLETADOS: 0 de 8 (0%)</span>
+                        <div class="achievements-progress-container">
+                            <div id="achievements-progress-fill" class="achievements-progress-fill" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                    <div id="achievements-list" class="achievements-grid"></div>
+                </div>
+            </div>
+
+            <div class="terminal-footer">
+                <span id="terminal-status-text">ESTADO: EN LÍNEA // CONECTADO AL NÚCLEO CUÁNTICO</span>
+                <span class="terminal-hint">Presiona ESC o clic en ✕ para salir</span>
+            </div>
+        </div>
+    </div>
+
     <!-- SCRIPTS DEL JUEGO (CARGA MODULAR SIN DEPENDENCIAS EXTERNAS) -->
     <script src="js/data/characters.data.js"></script>
+    <script src="js/data/codex.data.js"></script>
     <script src="js/data/prologue.data.js"></script>
     <script src="js/data/story.data.js"></script>
     <script src="js/state.js"></script>
@@ -278,6 +334,7 @@
     <script src="js/visual-novel.js"></script>
     <script src="js/prologue.js"></script>
     <script src="js/exploration.js"></script>
+    <script src="js/terminal.js"></script>
     <script src="js/pause-menu.js"></script>
     <script src="js/character-select.js"></script>
     <script src="js/avatar-creator.js"></script>

@@ -16,6 +16,10 @@ let unlockedCharacters = ["Protagonista"];
 // Lista de artefactos recolectados para la batalla (persiste en localStorage)
 let collectedArtifacts = [];
 
+// Lista de logros desbloqueados y registro de exploración (persiste en localStorage)
+let unlockedAchievements = [];
+let visitedRooms = ['nexus'];
+
 // Cargar estado guardado desde localStorage
 try {
     const savedUnlocks = localStorage.getItem('nexusUnlockedChars');
@@ -27,6 +31,11 @@ try {
     if (savedArtifacts) {
         const parsed = JSON.parse(savedArtifacts);
         if (Array.isArray(parsed)) collectedArtifacts = parsed;
+    }
+    const savedAchievements = localStorage.getItem('nexusAchievements');
+    if (savedAchievements) {
+        const parsed = JSON.parse(savedAchievements);
+        if (Array.isArray(parsed)) unlockedAchievements = parsed;
     }
 } catch (e) {
     console.warn("No se pudieron cargar los datos de guardado:", e);

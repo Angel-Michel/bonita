@@ -38,6 +38,17 @@ function updateArtifactsHud() {
     }
 }
 
+function checkRoomExploration(room) {
+    if (!visitedRooms.includes(room)) {
+        visitedRooms.push(room);
+    }
+    if (visitedRooms.includes('nexus') && visitedRooms.includes('lab') && visitedRooms.includes('gravity')) {
+        if (typeof unlockAchievement === 'function') {
+            unlockAchievement('explorer');
+        }
+    }
+}
+
 function collectArtifact(id, name, desc) {
     if (!collectedArtifacts.includes(id)) {
         collectedArtifacts.push(id);
@@ -46,6 +57,10 @@ function collectArtifact(id, name, desc) {
         } catch (e) {}
 
         updateArtifactsHud();
+
+        if (collectedArtifacts.length >= 3 && typeof unlockAchievement === 'function') {
+            unlockAchievement('relic_hunter');
+        }
 
         if (typeof showSystemToast === 'function') {
             showSystemToast(`★ ¡Artefacto Obtenido: ${name}! ★\n${desc}`);
@@ -75,6 +90,7 @@ function showNexusRoom() {
     uiBg.style.backgroundImage = '';
     uiExplorationStage.classList.remove('lab', 'gravity');
     uiExplorationStage.classList.add('nexus');
+    checkRoomExploration('nexus');
     updateArtifactsHud();
 }
 
@@ -84,6 +100,7 @@ function showLabRoom() {
     uiBg.className = 'bg-lab';
     uiExplorationStage.classList.remove('nexus', 'gravity');
     uiExplorationStage.classList.add('lab');
+    checkRoomExploration('lab');
     updateArtifactsHud();
 }
 
@@ -98,6 +115,7 @@ function showGravityRoom() {
     const isVegetaUnlocked = unlockedCharacters.includes('VEGETA') || unlockedCharacters.includes('vegueta') || selectedCompanion === 'VEGETA';
     uiExplorationStage.classList.toggle('has-vegeta', isVegetaUnlocked);
 
+    checkRoomExploration('gravity');
     updateArtifactsHud();
 }
 
@@ -115,6 +133,9 @@ function enterWastelandPortal() {
     }
 
     // Salir de exploración e iniciar el combate contra Vegeta
+    if (typeof unlockAchievement === 'function') {
+        unlockAchievement('daredevil');
+    }
     endExploration(false);
     if (typeof startVegetaBattle === 'function') {
         startVegetaBattle();
@@ -145,6 +166,9 @@ uiSecretChest.addEventListener('click', function() {
     uiLetterMessage.textContent = '"Marely, realmente te quiero. Eres la única chica a la que le daría todo y haría cualquier cosa por verte feliz."';
     uiLetterModal.style.display = 'flex';
     uiLetterModal.classList.add('active');
+    if (typeof unlockAchievement === 'function') {
+        unlockAchievement('secret_letter');
+    }
 });
 
 // Recolección de artefactos
@@ -181,6 +205,9 @@ if (npcVegetaBtn) {
         const randomQuote = dialogues[Math.floor(Math.random() * dialogues.length)];
         if (typeof showSystemToast === 'function') {
             showSystemToast(randomQuote);
+        }
+        if (typeof unlockAchievement === 'function') {
+            unlockAchievement('saiyan_alliance');
         }
     });
 }

@@ -78,5 +78,19 @@ if (btnPride) {
     btnPride.addEventListener('click', playerAppealPride);
 }
 
+// Botón de Terminal en el Menú de Pausa
+const pauseTerminalBtn = document.getElementById('pause-terminal-btn');
+if (pauseTerminalBtn) {
+    pauseTerminalBtn.addEventListener('click', () => {
+        if (typeof closePauseMenu === 'function') closePauseMenu();
+        if (typeof openTerminalModal === 'function') openTerminalModal();
+    });
+}
+
+// Inicializar la Terminal Multiversal, Misiones y Códice
+if (typeof initTerminal === 'function') {
+    initTerminal();
+}
+
 // Comprobar estado de guardado al iniciar la página
 checkSaveState();
